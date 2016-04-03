@@ -1,0 +1,1 @@
+wget "https://ru.wiktionary.org/w/index.php?title=""$1""&printable=yes" 2>/dev/null -O - | w3m -dump -no-graph -T text/html

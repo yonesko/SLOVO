@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -8,12 +9,52 @@ import java.net.URL;
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-            post();
+        String page = getPage();
+
+        //get content between two regexps
+        String content = page.split("(?m)^Русский")[1].split("(?m)^Источник")[0];
+        System.out.printf(content);
     }
 
-    private static void post() throws Exception {
+    private static String getPage() throws IOException {
+        StringBuilder sbPage = new StringBuilder();
+        String cmds[] = {
+                "/home/gleb/Documents/SLOVO/vkPost/resources/getPage.sh",
+                "абонемент"
+        };
+        Runtime rt = Runtime.getRuntime();
+        Process proc = rt.exec(cmds);
 
-        String url = "https://ru.wiktionary.org/w/api.php?action=query&format=xml&uselang=ru&prop=revisions%7Cinfo&titles=%D1%8F%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE&formatversion=latest&rvprop=content&inprop=url";
+        BufferedReader stdInput = new BufferedReader(new
+                InputStreamReader(proc.getInputStream()));
+
+        BufferedReader stdError = new BufferedReader(new
+                InputStreamReader(proc.getErrorStream()));
+
+        String s = null;
+        while ((s = stdInput.readLine()) != null) {
+            sbPage.append(s).append('\n');
+        }
+
+        System.out.println("Here is the standard error of the command (if any):\n");
+        while ((s = stdError.readLine()) != null) {
+            System.err.println(s);
+        }
+
+        return sbPage.toString();
+    }
+
+    private static void post(String title) throws Exception {
+
+        String url = "https://ru.wiktionary.org/w/api.php?" +
+                "action=query" +
+                "&format=xml" +
+                "&uselang=ru" +
+                "&prop=revisions%7Cinfo" +
+                "&titles=" + title +
+                "&formatversion=latest" +
+                "&rvprop=content" +
+                "&inprop=url";
 
 
 
@@ -21,11 +62,7 @@ public class FetchWiki {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        // optional default is GET
         con.setRequestMethod("POST");
-
-        //add request header
-//        con.setRequestProperty("User-Agent", USER_AGENT);
 
         int responseCode = con.getResponseCode();
         System.out.println("Response Code : " + responseCode);
@@ -45,7 +82,3 @@ public class FetchWiki {
 
     }
 }
-
-/*
-https://ru.wiktionary.org/w/api.php?action=query&format=json&uselang=ru&prop=revisions%7Cinfo&titles=pizza&formatversion=latest&rvprop=content&inprop=url
- */
