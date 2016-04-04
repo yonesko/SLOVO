@@ -3,12 +3,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Main {
+public class VKPublisher {
     private final String OWNER_ID = "118193284";
 
     public static void main(String[] args) throws Exception {
         String acces_token = "42eb4230195d9646cabd87371d0f3a6d18409215d7e2c140a34dbcadfd05587bfe9f7d5bf752ab168c174";
-        new Main().post(acces_token, "uhg");
+        new VKPublisher().post(acces_token, "uhg");
     }
     private void post(String acces_token, String message) throws Exception {
 
