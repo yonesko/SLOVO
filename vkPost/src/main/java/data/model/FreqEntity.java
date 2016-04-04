@@ -1,10 +1,12 @@
+package data.model;
+
 /**
  * Created by gleb on 03.04.16.
  */
 public class FreqEntity {
-    final String word;
-    final String pos;
-    final double imp;
+    private final String word;
+    private final String pos;
+    private final double imp;
 
     public FreqEntity(String word, String pos, double imp) {
         this.word = word;
@@ -26,7 +28,7 @@ public class FreqEntity {
 
     @Override
     public String toString() {
-        return "FreqEntity{" +
+        return "data.model.FreqEntity{" +
                 "word='" + word + '\'' +
                 ", pos='" + pos + '\'' +
                 ", imp=" + imp +
