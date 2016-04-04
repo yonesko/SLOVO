@@ -8,9 +8,9 @@ public class Main {
         FreqEntity fe;
         WordInfo wordInfo;
 
-        fe = FreqCSVReader.getRandom();
-        System.out.println(fe);
-        wordInfo = FetchWiki.findWord("железка");
+//        fe = FreqCSVReader.getRandom();
+//        System.out.println(fe);
+        wordInfo = FetchWiki.findWord("тибетский");
         System.out.println(wordInfo);
     }
 }

@@ -77,6 +77,8 @@ public class FetchWiki {
         String a[] = page.split("(?m)^Русский");
         if (a.length > 1)
             result = a[1].split("(?m)^Источник")[0];
+        result = result.replaceAll("\\[править\\]", "");
+        result = result.replaceAll("◆\\s+Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
         return result;
     }
 
@@ -93,7 +95,8 @@ public class FetchWiki {
         String a[] = content.split("(?m)^Этимология\\s*");
         if (a.length > 1)
             a = a[1].split("(?m)^\n");
-        if (result != null || result.indexOf("??") > 0)
+        result = a[0];
+        if (result != null && result.indexOf("??") > 0)
             result = null;
         return result;
     }
