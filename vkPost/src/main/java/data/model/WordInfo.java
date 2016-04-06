@@ -35,13 +35,26 @@ public class WordInfo {
                 '}';
     }
 
+    public boolean isPublishable() {
+        return meaning != null && meaning.length() > 100 ||
+                etymology != null && etymology.length() > 100;
+    }
+
     public String toPublish() {
         StringBuilder result = new StringBuilder();
         result.append(name.toUpperCase());
-        result.append('\n');
-        result.append(meaning);
-        result.append('\n');
-        result.append(etymology);
+        if (meaning != null) {
+            result.append('\n');
+            result.append("ЗНАЧЕНИЕ:");
+            result.append('\n');
+            result.append(meaning);
+        }
+        if (etymology != null) {
+            result.append('\n');
+            result.append("ЭТИМОЛОГИЯ:");
+            result.append('\n');
+            result.append(etymology);
+        }
         return result.toString();
     }
 }

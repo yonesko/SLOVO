@@ -13,29 +13,16 @@ import java.io.PrintWriter;
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-        String content, word;
-        FreqEntity freqEntity;
-        PrintWriter writer;
-
-//        for (int i = 0; i < 3; i++) {
-//            writer = new PrintWriter("page" + i + ".txt");
-//            freqEntity = FreqCSVReader.getRandom("s");
-//            word = freqEntity.getWord();
-//            System.out.println(freqEntity);
-//
-//            content = getContent(word);
-//            if (content.length() > 0) {
-//                writer.print(content);
-//                writer.flush();
-//                writer.close();
-//            }
-//            else i--;
-//        }
-        content = getContent("вертеп");
-        System.out.println(parseMeaning(content));
-        System.out.println(parseEtymology(content));
     }
 
+    /**
+     * makes http query to the wiktionary and parse page.<br>
+     *  if word exists at wiktionary and at least one parse is successful
+     *  return word; else null
+     * @param word to find at wiktionary
+     * @return
+     * word or null if fail
+     */
     public static WordInfo findWord(String word) {
         String content = null;
         WordInfo result = null;
