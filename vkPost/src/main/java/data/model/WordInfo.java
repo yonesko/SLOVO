@@ -34,4 +34,14 @@ public class WordInfo {
                 ", etymology='" + etymology + '\'' +
                 '}';
     }
+
+    public String toPublish() {
+        StringBuilder result = new StringBuilder();
+        result.append(name);
+        result.append('\n');
+        result.append(meaning);
+        result.append('\n');
+//        result.append(etymology);
+        return result.toString();
+    }
 }

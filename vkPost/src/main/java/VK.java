@@ -1,25 +1,37 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
-
-public class VKPublisher {
-    private final String OWNER_ID = "118193284";
+/*
+https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,offline&response_type=token&v=5.50
+ */
+public class VK {
+    private final static String OWNER_ID = "118193284";
+    private final static String acces_token = "c380b3c1e25ddb95bd0a19f796a73d836b527fba9b9654dac485d6384ca815050f29a7a830d1f24ceb28e";
 
     public static void main(String[] args) throws Exception {
-        String acces_token = "42eb4230195d9646cabd87371d0f3a6d18409215d7e2c140a34dbcadfd05587bfe9f7d5bf752ab168c174";
-        new VKPublisher().post(acces_token, "uhg");
     }
-    private void post(String acces_token, String message) throws Exception {
+    public static void wallPost(String message) throws Exception {
 
-        String url = String.format(
-                "https://api.vk.com/method/wall.post?owner_id=-%s&message=%s&access_token=%s",
+        String query = String.format(
+                        "wall.post?" +
+                        "owner_id=-%s" +
+                        "&from_group=1" +
+                        "&access_token=%s" +
+                        "&message=%s",
                 OWNER_ID,
-                message,
-                acces_token
+                acces_token,
+                message
         );
 
-
+        URI uri = new URI(
+                "https",
+                "api.vk.com",
+                "/method",
+                query,
+                null);
+        String url = uri.toASCIIString();
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();

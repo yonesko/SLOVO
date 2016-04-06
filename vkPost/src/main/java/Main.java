@@ -1,7 +1,8 @@
 import data.dao.FetchWiki;
-import data.dao.FreqCSVReader;
 import data.model.FreqEntity;
 import data.model.WordInfo;
+
+import java.net.URLEncoder;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -10,7 +11,9 @@ public class Main {
 
 //        fe = FreqCSVReader.getRandom();
 //        System.out.println(fe);
-        wordInfo = FetchWiki.findWord("тибетский");
-        System.out.println(wordInfo);
+        wordInfo = FetchWiki.findWord("пафос");
+        System.out.println(wordInfo.toPublish());
+
+        VK.wallPost(wordInfo.toPublish());
     }
 }
