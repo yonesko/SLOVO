@@ -45,10 +45,12 @@ public class FetchWikiTest {
                 " 5. субстантивир., неисч., разг. то же, что тибетский язык; язык\n" +
                 "    тибето-бирманской ветви китайско-тибетской группы \n" +
                 "', etymology='null'}");
+        findWord("воспроизводимый", null);
     }
     private void findWord(String word, String expected) {
-        String actual;
-        actual = FetchWiki.findWord(word).toString();
+        String actual = null;
+        if (expected != null)
+            actual = FetchWiki.findWord(word).toString();
         Assert.assertEquals(expected, actual);
     }
 }

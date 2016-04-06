@@ -74,6 +74,8 @@ public class FetchWiki {
 
         //get content between two regexps
         String page = sbPage.toString();
+        if (page.length() == 0)
+            return null;
         String a[] = page.split("(?m)^Русский");
         if (a.length > 1)
             result = a[1].split("(?m)^Источник")[0];
@@ -109,4 +111,5 @@ public class FetchWiki {
             result = a[1];
         return result;
     }
+    //TODO parse слово по ударениям
 }

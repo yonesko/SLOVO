@@ -8,14 +8,13 @@ https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https
  */
 public class VK {
     private final static String OWNER_ID = "118193284";
-    private final static String acces_token = "c380b3c1e25ddb95bd0a19f796a73d836b527fba9b9654dac485d6384ca815050f29a7a830d1f24ceb28e";
+    private final static String acces_token = "87582bf6f41a1bded77beede5c51a14b69c42669f7afdd86ef673bea2b0f731c406c10fff8d8b54d8e3b5";
 
     public static void main(String[] args) throws Exception {
     }
     public static void wallPost(String message) throws Exception {
 
         String query = String.format(
-                        "wall.post?" +
                         "owner_id=-%s" +
                         "&from_group=1" +
                         "&access_token=%s" +
@@ -28,7 +27,7 @@ public class VK {
         URI uri = new URI(
                 "https",
                 "api.vk.com",
-                "/method",
+                "/method/wall.post",
                 query,
                 null);
         String url = uri.toASCIIString();

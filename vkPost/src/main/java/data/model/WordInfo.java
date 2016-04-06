@@ -37,11 +37,11 @@ public class WordInfo {
 
     public String toPublish() {
         StringBuilder result = new StringBuilder();
-        result.append(name);
+        result.append(name.toUpperCase());
         result.append('\n');
         result.append(meaning);
         result.append('\n');
-//        result.append(etymology);
+        result.append(etymology);
         return result.toString();
     }
 }
