@@ -8,7 +8,7 @@ public class Main {
         FreqEntity fe;
         WordInfo wordInfo;
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             fe = FreqCSVReader.getRandom();
             System.out.println(fe);
             wordInfo = FetchWiki.findWord(fe.getWord());

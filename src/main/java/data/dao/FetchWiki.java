@@ -1,12 +1,10 @@
 package data.dao;
 
-import data.model.FreqEntity;
 import data.model.WordInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 /**
  * Created by gleb on 31.03.16.
