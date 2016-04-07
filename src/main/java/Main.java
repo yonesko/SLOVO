@@ -3,32 +3,37 @@ import data.dao.FreqCSVReader;
 import data.model.FreqEntity;
 import data.model.WordInfo;
 
+import java.util.concurrent.TimeUnit;
+
 public class Main {
+    private static final long SIX_H = TimeUnit.HOURS.toSeconds(6);
+
     public static void main(String[] args) {
         FreqEntity fe;
         WordInfo wordInfo;
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 6; i++) {
+            System.out.println("-------------------");
             fe = FreqCSVReader.getRandom();
             System.out.println(fe);
             wordInfo = FetchWiki.findWord(fe.getWord());
             System.out.println(wordInfo);
             if (wordInfo != null && wordInfo.isPublishable()) {
                 try {
-                    VK.wallPost(wordInfo.toPublish());
+                    VK.wallPost(wordInfo.toPublish(), System.currentTimeMillis()/1_000L + SIX_H * i);
                 } catch (Exception e) {
+                    i--;
                     e.printStackTrace();
                 }
-            } else
+            } else {
+                i--;
                 System.out.println("is not publishable");
+            }
+            System.out.println("-------------------");
         }
     }
 }
-/*
- WordInfo{name='орк', meaning='1. злобное сказочное существо, выдуманное Толкином ◆ Орки тысячами гибли у
- стен Минас-Тирита.
- ', etymology='Происходит из англ. orc. Английское слово Толкин взял из др.-англ. orc
- «великан, демон».
- '}
- is not publishable
- */
+//TODO history of post
+//TODO images
+//TODO log4j + mailto
+//TODO CSV JDBC
