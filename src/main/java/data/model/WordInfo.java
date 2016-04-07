@@ -7,6 +7,7 @@ public class WordInfo {
     private final String name;
     private final String meaning;
     private final String etymology;
+    private static final int THRESHOLD = 60;
 
     public WordInfo(String name, String meaning, String etymology) {
         this.name = name;
@@ -36,8 +37,8 @@ public class WordInfo {
     }
 
     public boolean isPublishable() {
-        return meaning != null && meaning.length() > 100 ||
-                etymology != null && etymology.length() > 100;
+        return meaning != null && meaning.length() > THRESHOLD ||
+                etymology != null && etymology.length() > THRESHOLD;
     }
 
     public String toPublish() {
