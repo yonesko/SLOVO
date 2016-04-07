@@ -50,7 +50,7 @@ public class FetchWiki {
         BufferedReader stdError = new BufferedReader(new
                 InputStreamReader(proc.getErrorStream()));
 
-        String s = null;
+        String s;
         while ((s = stdInput.readLine()) != null)
             sbPage.append(s).append('\n');
 
@@ -75,6 +75,8 @@ public class FetchWiki {
         if (a.length > 1)
             a = a[1].split("(?m)^\n");
         result = a[0];
+        //remove empty items
+        result = a[0].replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "");
         return result;
     }
     private static String parseEtymology(String content) {
