@@ -21,6 +21,10 @@ public class FreqCSVReader {
     public static void main(String...args) {
     }
 
+    static {
+        initDict();
+    }
+
     private static void initDict() {
         freqDict = new LinkedList<>();
         try {
@@ -38,12 +42,11 @@ public class FreqCSVReader {
 
             ResultSet results = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011");
 
-            for (int i = 0; i < 5 && results.next(); i++) {
+            while (results.next())
                 freqDict.add(new FreqEntity(
-                        results.getString("Lemma"),
-                        results.getString("PoS"),
-                        results.getDouble(("Freq"))));
-            }
+                    results.getString("Lemma"),
+                    results.getString("PoS"),
+                    results.getDouble(("Freq"))));
 
             conn.close();
         } catch (Exception e) {
@@ -53,16 +56,8 @@ public class FreqCSVReader {
 
     private FreqCSVReader() {}
 
-    private static List<FreqEntity> getFreqDict() {
-        if (freqDict == null)
-            initDict();
-        return freqDict;
-    }
-
     public static FreqEntity getRandom() {
-        List<FreqEntity> l = getFreqDict();
-        FreqEntity result;
         Random random = new Random();
-        return l.get(random.nextInt(l.size()));
+        return freqDict.get(random.nextInt(freqDict.size()));
     }
 }
