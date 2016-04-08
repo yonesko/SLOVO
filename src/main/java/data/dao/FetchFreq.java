@@ -25,6 +25,17 @@ public class FetchFreq {
         initDict();
     }
 
+    public static List<FreqEntity> getFreqDict() {
+        return new ArrayList<>(freqDict);
+    }
+
+    public static FreqEntity get(String word) {
+        for (FreqEntity freqEntity : freqDict)
+            if (freqEntity.getWord().equalsIgnoreCase(word))
+                return freqEntity;
+        return null;
+    }
+
     private static void initDict() {
         freqDict = new LinkedList<>();
         try {
