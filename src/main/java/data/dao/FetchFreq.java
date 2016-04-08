@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by gleb on 03.04.16.
  */
-public class FreqCSVReader {
+public class FetchFreq {
     private static List<FreqEntity> freqDict;
 
     public static void main(String...args) {
@@ -54,7 +54,7 @@ public class FreqCSVReader {
         }
     }
 
-    private FreqCSVReader() {}
+    private FetchFreq() {}
 
     public static FreqEntity getRandom() {
         Random random = new Random();

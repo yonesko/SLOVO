@@ -1,5 +1,5 @@
 import data.dao.FetchWiki;
-import data.dao.FreqCSVReader;
+import data.dao.FetchFreq;
 import data.model.FreqEntity;
 import data.model.WordInfo;
 
@@ -14,7 +14,7 @@ public class Main {
 
         for (int i = 0; i < 6; i++) {
             System.out.println("-------------------");
-            fe = FreqCSVReader.getRandom();
+            fe = FetchFreq.getRandom();
             System.out.println(fe);
             wordInfo = FetchWiki.findWord(fe.getWord());
             System.out.println(wordInfo);
