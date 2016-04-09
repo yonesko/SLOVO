@@ -50,5 +50,6 @@ public class Main {
         }
     }
 }
-//TODO history of post
+//TODO advertisment
 //TODO images
+//TODO schedule
