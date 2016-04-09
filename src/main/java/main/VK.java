@@ -1,13 +1,17 @@
 package main;
 
-import util.HttpConnectionAgent;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import data.model.WallPost;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.utils.URIBuilder;
-import org.h2.util.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import util.HttpConnectionAgent;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -26,7 +30,6 @@ public class VK {
     private final static String ACCES_TOKEN = "87582bf6f41a1bded77beede5c51a14b69c42669f7afdd86ef673bea2b0f731c406c10fff8d8b54d8e3b5";
 //
     public static void main(String[] args) throws Exception {
-        cleanUpTest();
     }
     public static void wallPost(String message, long date) throws Exception {
         List<String> query = new ArrayList<>();
@@ -68,8 +71,8 @@ public class VK {
         System.out.println(response.toString());
     }
 
-    public static List<String> getPublished() {
-        List<String> result = new LinkedList<>();
+    public static List<WallPost> getPublished() {
+        List<WallPost> result = new LinkedList<>();
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.get")
                 .setParameter("owner_id", "-" + OWNER_ID)
@@ -79,11 +82,9 @@ public class VK {
         int status = response.getStatusLine().getStatusCode();
 
         if (status == 200) {
-            String content = null;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            StringWriter content = new StringWriter();
             try {
-                IOUtils.copy(response.getEntity().getContent(), baos);
-                content = baos.toString("UTF-8");
+                IOUtils.copy(response.getEntity().getContent(), content);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(-1);
@@ -93,18 +94,21 @@ public class VK {
 
             try {
 
-                JSONObject jsonResp  = (JSONObject) parser.parse(content);
+                JSONObject jsonResp  = (JSONObject) parser.parse(content.toString());
                 JSONArray postsList = (JSONArray) jsonResp.get("response");
                 JSONObject unicPost  = null;
-                String text;
+                ObjectMapper mapper = new ObjectMapper();
+                WallPost post;
 
                 for (int i=1; i < postsList.size(); i++) {
                     unicPost = (JSONObject) postsList.get(i);
-                    text = (String) unicPost.get("text");
-                    result.add(text.substring(0, text.indexOf("<br>")));
+                    post = mapper.readValue(unicPost.toJSONString(), WallPost.class);
+                    result.add(post);
                 }
 
-            } catch (ParseException e) {
+            } catch (ParseException | JsonParseException | JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
