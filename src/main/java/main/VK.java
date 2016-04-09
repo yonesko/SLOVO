@@ -18,18 +18,24 @@ import java.net.*;
 import java.util.*;
 
 /*
+
 https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,offline&response_type=token&v=5.50
  */
 public class VK {
     //prod
-//    private final static String OWNER_ID = "118193284";
+    private final static String OWNER_ID = "118193284";
     //test
-    private final static String OWNER_ID = "119022967";
-    private final static String ACCES_TOKEN = "87582bf6f41a1bded77beede5c51a14b69c42669f7afdd86ef673bea2b0f731c406c10fff8d8b54d8e3b5";
+//    private final static String OWNER_ID = "119022967";
+    private final static String ACCES_TOKEN = "7c615dcc1c06ead089152605fc31e1a9598d7b01f2c6f8e77cfe4468028bd1df542bc0bfa9a82c6618ac9";
 //
     public static void main(String[] args) throws Exception {
+        System.out.println(VK.getPosts("postponed"));
     }
-    public static void wallPost(String message, long date) throws IOException {
+
+    /**
+     * @return true only if response status is 200
+     */
+    public static boolean wallPost(String message, long date) throws IOException {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
@@ -54,26 +60,48 @@ public class VK {
         wr.close();
 
         int responseCode = con.getResponseCode();
-        System.out.println("Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
         StringBuilder response = new StringBuilder();
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
 
-        while ((inputLine = in.readLine()) != null)
-            response.append(inputLine);
-        in.close();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null)
+                response.append(inputLine);
+            in.close();
 
+        }
         //print result
         System.out.println(response.toString());
+        return false;
     }
 
-    public static List<WallPost> getPublished() throws IOException, URISyntaxException, ParseException {
+    /**
+     * filterопределяет, какие типы записей на стене необходимо получить.<br> Возможны следующие значения параметра:<br>
+     suggests — предложенные записи на стене сообщества (доступно только при вызове с передачей access_token);<br>
+     postponed — отложенные записи (доступно только при вызове с передачей access_token);<br>
+     owner — записи на стене от ее владельца;<br>
+     others — записи на стене не от ее владельца;<br>
+     all — все записи на стене (owner + others).<br>
+     Если параметр не задан, то считается, что он равен all.
+     */
+    public static List<WallPost> getPosts(String...filters) throws IOException, URISyntaxException, ParseException {
+        List<WallPost> result = new LinkedList<>();
+        if (filters == null || filters.length == 0)
+            result.addAll(getPosts("all"));
+        else
+            for (String filter : filters)
+                result.addAll(getPosts(filter));
+        return result;
+
+    }
+
+    private static List<WallPost> getPosts(String filter) throws IOException, URISyntaxException, ParseException {
         List<WallPost> result = new LinkedList<>();
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.get")
                 .setParameter("owner_id", "-" + OWNER_ID)
+                .setParameter("filter", filter)
                 .setParameter("acces_token", ACCES_TOKEN);
 
         HttpResponse response = HttpConnectionAgent.connectResponse(uriBuilder);

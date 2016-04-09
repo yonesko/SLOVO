@@ -1,7 +1,7 @@
 package main;
 
-import data.dao.FetchWiki;
 import data.dao.FetchFreq;
+import data.dao.FetchWiki;
 import data.model.FreqEntity;
 import data.model.WallPost;
 import data.model.WordInfo;
@@ -9,11 +9,15 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final long SIX_H = TimeUnit.HOURS.toSeconds(6);
+    private static long lastDate = 0;
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException {
         List<FreqEntity> candidates = new LinkedList<>();
@@ -21,13 +25,10 @@ public class Main {
         Random random = new Random();
         FreqEntity fe;
         WordInfo wordInfo;
-        WallPost lastPost;
-        long lastPostDate;
 
         candidates = FetchFreq.getFreqDict();
-        published = VK.getPublished();
-        lastPost = getLast(published);
-        lastPostDate = lastPost == null ? System.currentTimeMillis()/1000L : lastPost.getDate();
+        published = VK.getPosts("owner");
+        lastDate = getLastDate();
 
         //remove published
         for (WallPost s : published)
@@ -39,10 +40,13 @@ public class Main {
             System.out.println("---------" + i + "----------");
             fe = candidates.get(random.nextInt(candidates.size()));
             System.out.println(fe);
+
             wordInfo = FetchWiki.findWord(fe.getWord());
 
-            if (wordInfo != null && wordInfo.isPublishable())
-                VK.wallPost(wordInfo.toPublish(), lastPostDate + SIX_H * (i + 1));
+            if (wordInfo != null && wordInfo.isPublishable()) {
+                if (VK.wallPost(wordInfo.toPublish(), lastDate + SIX_H * (i + 1)))
+                    candidates.remove(fe);
+            }
             else {
                 i--;
                 System.out.println("is not publishable");
@@ -50,15 +54,21 @@ public class Main {
             System.out.println("-------------------");
         }
     }
-    private static WallPost getLast(List<WallPost> wall) {
-        WallPost result = null;
-        long max = Long.MIN_VALUE;
-        for (WallPost post : wall)
-            if (post.getDate() > max)
-                result = post;
+    private static long getLastDate() throws ParseException, IOException, URISyntaxException {
+        List<WallPost> wall = VK.getPosts("owner");
+        long result = 0;
+
+        if (wall == null || wall.size() == 0)
+            result = 0;
+        else
+            for (WallPost post : wall)
+                if (post.getDate() > result)
+                    result = post.getDate();
+
         return result;
     }
 }
 //TODO advertisment
 //TODO images
 //TODO schedule
+//TODO (цитата из Национального корпуса русского языка, см. Список литературы)

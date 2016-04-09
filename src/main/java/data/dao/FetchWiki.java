@@ -11,8 +11,10 @@ import java.io.InputStreamReader;
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-    }
+        String w = "сестренка";
+        System.out.println(findWord(w));
 
+    }
     /**
      * makes http query to the wiktionary and parse page.<br>
      *  if word exists at wiktionary and at least one parse is successful
@@ -35,6 +37,7 @@ public class FetchWiki {
     }
 
     private static String getContent(String word) throws IOException {
+        word = word.toLowerCase();
         StringBuilder sbPage = new StringBuilder();
         String result = null;
         String cmds[] = {
