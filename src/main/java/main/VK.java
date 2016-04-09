@@ -14,9 +14,7 @@ import org.json.simple.parser.ParseException;
 import util.HttpConnectionAgent;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.*;
 
 /*
@@ -31,7 +29,7 @@ public class VK {
 //
     public static void main(String[] args) throws Exception {
     }
-    public static void wallPost(String message, long date) throws Exception {
+    public static void wallPost(String message, long date) throws IOException {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
@@ -71,7 +69,7 @@ public class VK {
         System.out.println(response.toString());
     }
 
-    public static List<WallPost> getPublished() {
+    public static List<WallPost> getPublished() throws IOException, URISyntaxException, ParseException {
         List<WallPost> result = new LinkedList<>();
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.get")
@@ -83,90 +81,30 @@ public class VK {
 
         if (status == 200) {
             StringWriter content = new StringWriter();
-            try {
-                IOUtils.copy(response.getEntity().getContent(), content);
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+            IOUtils.copy(response.getEntity().getContent(), content);
 
             JSONParser parser   = new JSONParser();
 
-            try {
+            JSONObject jsonResp  = (JSONObject) parser.parse(content.toString());
+            JSONArray postsList = (JSONArray) jsonResp.get("response");
+            JSONObject unicPost  = null;
+            ObjectMapper mapper = new ObjectMapper();
+            WallPost post;
 
-                JSONObject jsonResp  = (JSONObject) parser.parse(content.toString());
-                JSONArray postsList = (JSONArray) jsonResp.get("response");
-                JSONObject unicPost  = null;
-                ObjectMapper mapper = new ObjectMapper();
-                WallPost post;
-
-                for (int i=1; i < postsList.size(); i++) {
-                    unicPost = (JSONObject) postsList.get(i);
-                    post = mapper.readValue(unicPost.toJSONString(), WallPost.class);
-                    result.add(post);
-                }
-
-            } catch (ParseException | JsonParseException | JsonMappingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (int i=1; i < postsList.size(); i++) {
+                unicPost = (JSONObject) postsList.get(i);
+                post = mapper.readValue(unicPost.toJSONString(), WallPost.class);
+                result.add(post);
             }
         }
         return result;
 
     }
 
-    private static List<String> getPublishedId() {
-        List<String> result = new LinkedList<>();
-        URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.get")
-                .setParameter("owner_id", "-" + 119022967)
-                .setParameter("acces_token", ACCES_TOKEN)
-                .setParameter("count", "10");
-
-        HttpResponse response = HttpConnectionAgent.connectResponse(uriBuilder);
-        int status = response.getStatusLine().getStatusCode();
-
-        if (status == 200) {
-            String content = null;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                IOUtils.copy(response.getEntity().getContent(), baos);
-                content = baos.toString("UTF-8");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
-
-            JSONParser parser   = new JSONParser();
-
-            try {
-
-                JSONObject jsonResp  = (JSONObject) parser.parse(content);
-                JSONArray postsList = (JSONArray) jsonResp.get("response");
-                JSONObject unicPost  = null;
-                long id;
-
-                for (int i=1; i < postsList.size(); i++) {
-                    unicPost = (JSONObject) postsList.get(i);
-                    id = (long) unicPost.get("id");
-                    result.add(String.valueOf(id));
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-
-    }
-    //https://oauth.vk.com/authorize?client_id=119022967&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,offline&response_type=token&v=5.50
     private static void cleanUpTest() {
-        for (String s : getPublishedId()) {
-            cleanUpTest(s);
-        }
+
     }
-    private static void cleanUpTest(String post_id) {
+    private static void cleanUpTest(String post_id) throws IOException, URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.delete")
                 .setParameter("owner_id", "-" + 119022967)

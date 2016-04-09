@@ -12,27 +12,17 @@ import java.net.URISyntaxException;
 
 public abstract class HttpConnectionAgent {
 
-    public static HttpResponse connectResponse(URIBuilder uriBuilder) {
+    public static HttpResponse connectResponse(URIBuilder uriBuilder) throws URISyntaxException, IOException {
 
         URI uri = null;
 
-        try {
-            uri = uriBuilder.build();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        uri = uriBuilder.build();
 
         HttpClient   client     = HttpClientBuilder.create().build();
         HttpGet      request    = new HttpGet(uri);
         HttpResponse response   = null;
 
-        try {
-            response = client.execute(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        response = client.execute(request);
 
         return response;
     }
