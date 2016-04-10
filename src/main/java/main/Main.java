@@ -71,4 +71,3 @@ public class Main {
 //TODO advertisment
 //TODO images
 //TODO schedule
-//TODO (цитата из Национального корпуса русского языка, см. Список литературы)
