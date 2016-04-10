@@ -20,7 +20,7 @@ public class Main {
     private static final long DELAY_H = 5;
     private static final long PORTION_NUM = 5;
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-    private static final Queue<String> wantedWords = new LinkedList<>(Arrays.asList("аа", "мафия"));
+    private static final Queue<String> wantedWords = new LinkedList<>();
     private static List<FreqEntity> candidates;
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
@@ -30,7 +30,7 @@ public class Main {
 
         candidates = FetchFreq.getFreqDict();
         published = VK.getPosts("owner");
-        lastDateMils = sdf.parse("10/04/2016 22:55:00").getTime();
+        lastDateMils = sdf.parse("11/04/2016 15:55:00").getTime();
         System.out.println("lastDateMils is " + sdf.format(new Date(lastDateMils)));
 
         //remove already published from candidates
@@ -60,6 +60,8 @@ public class Main {
                     i--;
                     System.out.println(nextPost.getName() + " is not publishable");
                 }
+            else
+                i--;
             System.out.println("-------------------");
         }
     }
