@@ -11,8 +11,8 @@ import java.io.InputStreamReader;
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-        String w = "сестренка";
-        System.out.println(findWord(w));
+        String w = "расчитывать";
+        System.out.println(parseEtymology(w));
 
     }
     /**
@@ -62,33 +62,48 @@ public class FetchWiki {
 
         //get content between two regexps
         String page = sbPage.toString();
-        if (page.length() == 0)
-            return null;
-        String a[] = page.split("(?m)^Русский");
-        if (a.length > 1)
-            result = a[1].split("(?m)^Источник")[0];
-        result = result.replaceAll("\\[править\\]", "");
-        result = result.replaceAll("◆\\s+Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
-        result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Национального\\s+корпуса\\s+русского\\s+языка,\\s+см\\.\\s+Список\\s+литературы\\)", "");
+        if (page.length() != 0) {
+            String a[] = page.split("(?m)^Русский");
+            if (a.length > 1) {
+                result = a[1].split("(?m)^Источник")[0];
+                result = result.replaceAll("\\[править\\]", "");
+                result = result.replaceAll("◆\\s+Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
+                result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Национального\\s+корпуса\\s+русского\\s+языка,\\s+см\\.\\s+Список\\s+литературы\\)", "");
+            }
+        }
+        return result;
+    }
+    /**
+     * extracts meaning paragraph of the page.<br>
+     * Considered that paragraph is text surrounded with empty lines followed by line starting with para.<br>
+     * Para is the only word at this line.
+     * @return meaning or null if doesn't exists
+     */
+    private static String parseParagraph(String content, String para) {
+        String result = null;
+        String a[] = content.split("(?m)^" + para + "\\s*");
+        if (a.length > 1) {
+            a = a[1].split("(?m)^\n");
+            result = a[0];
+        }
         return result;
     }
 
+    /**
+     * {@link data.dao.FetchWiki#parseParagraph Parses} meaning paragraph removing empty items from list.
+     */
     private static String parseMeaning(String content) {
-        String result = null;
-        String a[] = content.split("(?m)^Значение\\s*");
-        if (a.length > 1)
-            a = a[1].split("(?m)^\n");
-        result = a[0];
-        //remove empty items
-        result = a[0].replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "");
+        String result = parseParagraph(content, "Значение");
+        if (result != null)
+            result = result.replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "");
         return result;
     }
+    /**
+     * {@link data.dao.FetchWiki#parseParagraph Parses} etymology paragraph avoiding unfinished paragraph
+     * which is detected by "??"
+     */
     private static String parseEtymology(String content) {
-        String result = null;
-        String a[] = content.split("(?m)^Этимология\\s*");
-        if (a.length > 1)
-            a = a[1].split("(?m)^\n");
-        result = a[0];
+        String result = parseParagraph(content, "Этимология");;
         if (result != null && result.indexOf("??") > 0)
             result = null;
         return result;

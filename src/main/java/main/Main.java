@@ -9,17 +9,16 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    private static final long SIX_H = TimeUnit.HOURS.toSeconds(6);
-    private static long lastDate = 0;
+    private static final long DELAY_H = 5;
+    private static long lastDateMils = 0;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-    public static void main(String[] args) throws ParseException, IOException, URISyntaxException {
+    public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
         List<FreqEntity> candidates = new LinkedList<>();
         List<WallPost> published = new ArrayList<>();
         Random random = new Random();
@@ -28,7 +27,8 @@ public class Main {
 
         candidates = FetchFreq.getFreqDict();
         published = VK.getPosts("owner");
-        lastDate = getLastDate();
+        lastDateMils = sdf.parse("10/04/2016 22:55:00").getTime();
+        System.out.println("lastDateMils is " + sdf.format(new Date(lastDateMils)));
 
         //remove published
         for (WallPost s : published)
@@ -44,8 +44,10 @@ public class Main {
             wordInfo = FetchWiki.findWord(fe.getWord());
 
             if (wordInfo != null && wordInfo.isPublishable()) {
-                if (VK.wallPost(wordInfo.toPublish(), lastDate + SIX_H * (i + 1)))
+                if (VK.wallPost(wordInfo.toPublish(), TimeUnit.MILLISECONDS.toSeconds(lastDateMils) + TimeUnit.HOURS.toSeconds(DELAY_H))) {
                     candidates.remove(fe);
+                    lastDateMils += TimeUnit.HOURS.toSeconds(DELAY_H);
+                }
             }
             else {
                 i--;
@@ -54,19 +56,19 @@ public class Main {
             System.out.println("-------------------");
         }
     }
-    private static long getLastDate() throws ParseException, IOException, URISyntaxException {
-        List<WallPost> wall = VK.getPosts("owner");
-        long result = 0;
-
-        if (wall == null || wall.size() == 0)
-            result = 0;
-        else
-            for (WallPost post : wall)
-                if (post.getDate() > result)
-                    result = post.getDate();
-
-        return result;
-    }
+//    private static long getLastDate() throws ParseException, IOException, URISyntaxException {
+//        List<WallPost> wall = VK.getPosts("owner");
+//        long result = 0;
+//
+//        if (wall == null || wall.size() == 0)
+//            result = 0;
+//        else
+//            for (WallPost post : wall)
+//                if (post.getDate() > result)
+//                    result = post.getDate();
+//
+//        return result;
+//    }
 }
 //TODO advertisment
 //TODO images

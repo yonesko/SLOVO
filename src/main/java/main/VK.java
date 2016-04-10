@@ -23,9 +23,9 @@ https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https
  */
 public class VK {
     //prod
-    private final static String OWNER_ID = "118193284";
+//    private final static String OWNER_ID = "118193284";
     //test
-//    private final static String OWNER_ID = "119022967";
+    private final static String OWNER_ID = "119022967";
     private final static String ACCES_TOKEN = "7c615dcc1c06ead089152605fc31e1a9598d7b01f2c6f8e77cfe4468028bd1df542bc0bfa9a82c6618ac9";
 //
     public static void main(String[] args) throws Exception {
@@ -35,7 +35,7 @@ public class VK {
     /**
      * @return true only if response status is 200
      */
-    public static boolean wallPost(String message, long date) throws IOException {
+    public static boolean wallPost(String message, long date) throws IOException, ParseException {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
@@ -73,7 +73,20 @@ public class VK {
         }
         //print result
         System.out.println(response.toString());
-        return false;
+        return isWallPostSuccessful(response.toString());
+    }
+    private static boolean isWallPostSuccessful(String response) throws ParseException {
+        boolean result = false;
+        JSONParser parser   = new JSONParser();
+        JSONObject jsonResp  = (JSONObject) parser.parse(response.toString());
+        JSONObject post = (JSONObject) jsonResp.get("response");
+
+        if (post == null)
+            result = false;
+        else
+            result = post.get("post_id") != null;
+
+        return result;
     }
 
     /**
