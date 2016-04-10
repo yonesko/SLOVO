@@ -26,6 +26,9 @@ public class FetchFreq {
         return new ArrayList<>(freqDict);
     }
 
+    /**
+     * @return word or null if doesn't exists
+     */
     public static FreqEntity get(String word) {
         for (FreqEntity freqEntity : freqDict)
             if (freqEntity.getWord().equalsIgnoreCase(word))

@@ -16,9 +16,9 @@ public class FetchWiki {
 
     }
     /**
-     * makes http query to the wiktionary and parse page.<br>
-     *  if word exists at wiktionary and at least one parse is successful
-     *  return word; else null
+     * Makes http query to the wiktionary and parse page.<br>
+     * If word exists at wiktionary and at least one parse is successful
+     * return word; else null.
      * @param word to find at wiktionary
      * @return
      * word or null if fail
