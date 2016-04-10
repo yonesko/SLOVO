@@ -6,62 +6,71 @@ import data.model.FreqEntity;
 import data.model.WallPost;
 import data.model.WordInfo;
 import org.json.simple.parser.ParseException;
+import util.NextPostAdjuster;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
- * User specifies lastDateMils and the program generates six posts with 5 hour delay
+ * User specifies lastPostTime and the program generates PORTION_NUM posts with hour {@link NextPostAdjuster delay}.<br>
+ * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long DELAY_H = 5;
     private static final long PORTION_NUM = 5;
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private static final Queue<String> wantedWords = new LinkedList<>();
     private static List<FreqEntity> candidates;
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
         List<WallPost> published = new ArrayList<>();
         WordInfo nextPost;
-        long nextPostDateMils, lastDateMils;
+        LocalDateTime lastPostTime, nextPostTime;
 
         candidates = FetchFreq.getFreqDict();
         published = VK.getPosts("owner");
-        lastDateMils = sdf.parse("11/04/2016 15:55:00").getTime();
-        System.out.println("lastDateMils is " + sdf.format(new Date(lastDateMils)));
+
+
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 11, 0, 0);
+        System.out.println("lastPostTime is " + lastPostTime);
 
         //remove already published from candidates
         for (WallPost s : published)
             if (candidates.contains(FetchFreq.get(s.getWord())))
                 candidates.remove(FetchFreq.get(s.getWord()));
 
+        nextPostTime = nextPostTime.with(new NextPostAdjuster());
         //publish portion
         for (int i = 0; i < PORTION_NUM && candidates.size() > 0; i++) {
             System.out.println("---------" + i + "----------");
+
             nextPost = nextWord();
 
-            if (nextPost != null)
+            if (nextPost != null) {
                 if (nextPost.isPublishable()) {
-                    nextPostDateMils = lastDateMils + TimeUnit.HOURS.toMillis(DELAY_H);
+
                     System.out.println(String.format(
                             "Trying to publish %s to date %s",
                             nextPost.getName(),
-                            sdf.format(new Date(nextPostDateMils))));
-                    if (VK.wallPost(nextPost.toPublish(), TimeUnit.MILLISECONDS.toSeconds(nextPostDateMils))) {
+                            nextPostTime));
+
+                    if (VK.wallPost(nextPost.toPublish(), nextPostTime)) {
 //                    candidates.remove(fe);
                         System.out.println("OK");
-                        lastDateMils += TimeUnit.HOURS.toMillis(DELAY_H);
-                    } else
-                        System.out.println("NOT OK");
+                    } else {
+                        System.out.println("NOT OK: Server error");
+                    }
+                    nextPostTime = nextPostTime.with(new NextPostAdjuster());
                 } else {
                     i--;
-                    System.out.println(nextPost.getName() + " is not publishable");
+                    System.out.println("NOT OK: word " + nextPost.getName() + " is not publishable");
                 }
-            else
+            }
+            else {
                 i--;
+                System.out.println("NOT OK: word is absent from wiki");
+            }
             System.out.println("-------------------");
         }
     }

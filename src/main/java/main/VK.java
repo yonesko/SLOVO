@@ -15,6 +15,9 @@ import util.HttpConnectionAgent;
 
 import java.io.*;
 import java.net.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /*
@@ -33,16 +36,18 @@ public class VK {
     }
 
     /**
-     * @return true only if response status is 200
+     *
+     * @param date epoch in seconds
+     * @return true only if post_id in server's response exists
      */
-    public static boolean wallPost(String message, long date) throws IOException, ParseException {
+    public static boolean wallPost(String message, LocalDateTime date) throws IOException, ParseException {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
         pars.put("from_group", "1");
         pars.put("access_token", ACCES_TOKEN);
         pars.put("message", URLEncoder.encode(message, "UTF-8"));
-        pars.put("publish_date", String.valueOf(date));
+        pars.put("publish_date", String.valueOf(ZonedDateTime.of(date, ZoneId.systemDefault()).toEpochSecond()));
 
         for (Map.Entry<String, String> e : pars.entrySet())
             query.add(e.getKey() + "=" + e.getValue());
