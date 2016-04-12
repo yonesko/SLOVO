@@ -32,7 +32,7 @@ public class Main {
         published = VK.getPosts("owner");
 
 
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 13, 0, 0);
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 13, 17, 55);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //remove already published from candidates
@@ -51,18 +51,15 @@ public class Main {
 
             if (nextPost != null) {
                 if (nextPost.isPublishable()) {
-
                     System.out.println(String.format(
                             "Trying to publish %s to date %s",
                             nextPost.getName(),
                             nextPostTime));
 
-                    if (VK.wallPost(nextPost.toPublish(), nextPostTime)) {
-//                    candidates.remove(fe);
-                        System.out.println("OK");
-                    } else {
-                        System.out.println("NOT OK: Server error");
-                    }
+                    boolean isPosted = VK.wallPost(nextPost.toPublish(), nextPostTime);
+
+                    System.out.println("is posted :" + isPosted);
+
                     nextPostTime = nextPostTime.with(new NextPostAdjuster());
                 } else {
                     i--;
