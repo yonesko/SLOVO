@@ -10,16 +10,42 @@ import java.util.*;
  */
 public class FetchFreq {
     private static List<FreqEntity> freqDict;
+    private static Connection conn;
 
-    public static void main(String...args) {
+    public static void main(String...args) throws SQLException {
+        Statement stmt = getConn().createStatement();
+
+        ResultSet results = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011 order by Freq ");
+
+        while (results.next())
+            System.out.println(results.getString("Lemma")+" "+
+                    results.getString("PoS")+" "+
+                    results.getDouble(("Freq")));
     }
 
     static {
         try {
+            Class.forName("org.relique.jdbc.csv.CsvDriver");
+
             initDict();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private static Connection getConn() {
+        Properties props = new java.util.Properties();
+        props.put("separator", "\t");
+        props.put("charset", "UTF-8");
+        props.put("maxFileSize", 10000);
+        try {
+            if (conn == null || conn.isClosed())
+                conn = DriverManager.getConnection("jdbc:relique:csv:" + "resources", props);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conn;
+
     }
 
     public static List<FreqEntity> getFreqDict() {
@@ -36,29 +62,24 @@ public class FetchFreq {
         return null;
     }
 
+
+
     private static void initDict() throws ClassNotFoundException, SQLException {
         freqDict = new LinkedList<>();
-        Properties props = new java.util.Properties();
 
-        props.put("separator", "\t");                // separator is a bar
-        props.put("charset", "UTF-8");         // file encoding is "ISO-8859-2"
-        props.put("maxFileSize", 10000);            // max size of files in bytes.
 
-        Class.forName("org.relique.jdbc.csv.CsvDriver");
-
-        Connection conn = DriverManager.getConnection("jdbc:relique:csv:" + "resources", props);
-
-        Statement stmt = conn.createStatement();
+        Statement stmt = getConn().createStatement();
 
         ResultSet results = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011");
 
         while (results.next())
-            freqDict.add(new FreqEntity(
-                    results.getString("Lemma"),
-                    results.getString("PoS"),
-                    results.getDouble(("Freq"))));
+            if (results.getDouble(("Freq")) < 1.0)
+                freqDict.add(new FreqEntity(
+                        results.getString("Lemma"),
+                        results.getString("PoS"),
+                        results.getDouble(("Freq"))));
 
-        conn.close();
+        getConn().close();
     }
 
     private FetchFreq() {}

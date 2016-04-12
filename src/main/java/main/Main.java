@@ -15,11 +15,11 @@ import java.time.Month;
 import java.util.*;
 
 /**
- * User specifies lastPostTime and the program generates PORTION_NUM posts with hour {@link NextPostAdjuster delay}.<br>
+ * User specifies lastPostTime and the program generates PORTION_SIZE posts with hour {@link NextPostAdjuster delay}.<br>
  * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long PORTION_NUM = 5;
+    private static final long PORTION_SIZE = 5;
     private static final Queue<String> wantedWords = new LinkedList<>();
     private static List<FreqEntity> candidates;
 
@@ -32,7 +32,7 @@ public class Main {
         published = VK.getPosts("owner");
 
 
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 11, 0, 0);
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 13, 0, 0);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //remove already published from candidates
@@ -40,9 +40,11 @@ public class Main {
             if (candidates.contains(FetchFreq.get(s.getWord())))
                 candidates.remove(FetchFreq.get(s.getWord()));
 
+        System.out.println("candidates size=" +candidates.size());
+
         nextPostTime = nextPostTime.with(new NextPostAdjuster());
         //publish portion
-        for (int i = 0; i < PORTION_NUM && candidates.size() > 0; i++) {
+        for (int i = 0; i < PORTION_SIZE && candidates.size() > 0; i++) {
             System.out.println("---------" + i + "----------");
 
             nextPost = nextWord();
