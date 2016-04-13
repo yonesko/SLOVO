@@ -20,8 +20,10 @@ import java.util.*;
  */
 public class Main {
     private static final long PORTION_SIZE = 5;
-    private static final Queue<String> wantedWords = new LinkedList<>();
     private static List<FreqEntity> candidates;
+    private static final Queue<String> wantedWords = new LinkedList<>(Arrays.asList(new String[]{
+
+    }));
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
         List<WallPost> published = new ArrayList<>();
@@ -32,7 +34,7 @@ public class Main {
         published = VK.getPosts("owner");
 
 
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 13, 17, 55);
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 14, 0, 0);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //remove already published from candidates
@@ -91,3 +93,17 @@ public class Main {
 //TODO advertisment
 //TODO images
 //TODO schedule
+/*
+TODO
+Фразеологизмы и устойчивые сочетания
+
+  *  как бык поссал
+  *  мало — на раз поссать
+  *  поссать в бане
+  *  поссать от души / от души поссать
+  *
+
+
+
+Пословицы и поговорки
+ */

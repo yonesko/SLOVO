@@ -7,12 +7,14 @@ public class WordInfo {
     private final String name;
     private final String meaning;
     private final String etymology;
+    private final String syllables;
     private static final int THRESHOLD = 60;
 
-    public WordInfo(String name, String meaning, String etymology) {
+    public WordInfo(String name, String meaning, String etymology, String syllables) {
         this.name = name;
         this.meaning = meaning == null ? null : meaning.trim();
         this.etymology = etymology == null ? null : etymology.trim();
+        this.syllables = syllables;
     }
 
     public String getName() {
@@ -27,15 +29,6 @@ public class WordInfo {
         return etymology;
     }
 
-    @Override
-    public String toString() {
-        return "WordInfo{" +
-                "name='" + name + '\'' +
-                ", meaning='" + meaning + '\'' +
-                ", etymology='" + etymology + '\'' +
-                '}';
-    }
-
     public boolean isPublishable() {
         return meaning != null && meaning.length() > THRESHOLD ||
                 etymology != null && etymology.length() > THRESHOLD;
@@ -43,7 +36,10 @@ public class WordInfo {
 
     public String toPublish() {
         StringBuilder result = new StringBuilder();
-        result.append(name.toUpperCase());
+        if (syllables != null && !syllables.isEmpty())
+            result.append(syllables.toUpperCase());
+        else
+            result.append(name.toUpperCase());
         if (meaning != null) {
             result.append('\n');
             result.append("ЗНАЧЕНИЕ:");

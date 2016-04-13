@@ -5,14 +5,23 @@ import data.model.WordInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.Collator;
+import java.util.Locale;
+import java.util.Scanner;
 
 /**
  * Created by gleb on 31.03.16.
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-        String w = "расчитывать";
-        System.out.println(parseEtymology(w));
+        PrintWriter writer;
+        for (int i = 0; i < 5; i++) {
+            String cont = getContent(FetchFreq.getRandom().getWord());
+            writer = new PrintWriter(i + ".txt");
+            writer.println(cont);
+            writer.flush();
+        }
 
     }
     /**
@@ -32,7 +41,10 @@ public class FetchWiki {
             e.printStackTrace();
         }
         if (content != null)
-            result = new WordInfo(word, parseMeaning(content), parseEtymology(content));
+            result = new WordInfo(word,
+                    parseMeaning(content),
+                    parseEtymology(content),
+                    parseSyllables(content, word));
         return result;
     }
 
@@ -110,13 +122,35 @@ public class FetchWiki {
             result = null;
         return result;
     }
-    private static String parseMorpho(String content) {
-        String result = "";
-        String a[] = content.split("(?m)^Морфологические и синтаксические свойства");
-        if (a.length > 1)
-            a = a[1].split("(?m)^\n");
-        if (a.length > 1)
-            result = a[1];
+
+    /**
+     * extracts word by syllables.<br>
+     * Considered that target line between "Морфологические и синтаксические свойства" and "Значение" lines
+     * as well as between empty lines and syllables word is similar with required word.
+     * @return word by syllables or null if doesn't exists
+     */
+    public static String parseSyllables(String content, String word) {
+        String result = null, soil, candidate;
+        Scanner scanner;
+        Collator collator = Collator.getInstance(Locale.forLanguageTag("Cyrl"));
+        collator.setStrength(Collator.PRIMARY);
+
+        String a[] = content.split("(?m)^Морфологические и синтаксические свойства\\s*");
+        if (a.length > 1) {
+            a = a[1].split("(?m)^Значение\\s*");
+            if (a.length > 1) {
+                soil = a[0];
+                scanner = new Scanner(soil);
+                while (scanner.hasNextLine()) {
+                    candidate = scanner.nextLine();
+                    if (collator.compare(candidate.replaceAll("·|-", "").trim(), word) == 0) {
+                        result = candidate;
+                        break;
+                    }
+                }
+            }
+        }
+
         return result;
     }
     //TODO parse слово по ударениям
