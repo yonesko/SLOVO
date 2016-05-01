@@ -13,14 +13,10 @@ public class FetchFreq {
     private static Connection conn;
 
     public static void main(String...args) throws SQLException {
-        Statement stmt = getConn().createStatement();
+        for (FreqEntity freqEntity : freqDict)
+            if (freqEntity.getWord().equalsIgnoreCase("канитель"))
+                System.out.println(freqEntity);
 
-        ResultSet results = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011 order by Freq ");
-
-        while (results.next())
-            System.out.println(results.getString("Lemma")+" "+
-                    results.getString("PoS")+" "+
-                    results.getDouble(("Freq")));
     }
 
     static {
@@ -53,6 +49,33 @@ public class FetchFreq {
     }
 
     /**
+     * Searches in whole file
+     * @return word or null if doesn't exists
+     */
+    public static FreqEntity getDirect(String word) {
+        FreqEntity result = null;
+        Statement stmt = null;
+        try {
+            stmt = getConn().createStatement();
+            ResultSet data = stmt.executeQuery(String.format("SELECT Lemma, PoS, Freq FROM freqrnc2011 " +
+                    "WHERE LOWER('%s') = LOWER(Lemma)",
+                    word));
+
+            while (data.next())
+                result = new FreqEntity(
+                        data.getString("Lemma"),
+                        data.getString("PoS"),
+                        data.getDouble(("Freq")));
+
+            getConn().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Searches in list which cat be filtered (by Freq for example)
      * @return word or null if doesn't exists
      */
     public static FreqEntity get(String word) {
@@ -62,11 +85,8 @@ public class FetchFreq {
         return null;
     }
 
-
-
     private static void initDict() throws ClassNotFoundException, SQLException {
         freqDict = new LinkedList<>();
-
 
         Statement stmt = getConn().createStatement();
 

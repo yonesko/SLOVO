@@ -15,13 +15,15 @@ import java.util.Scanner;
  */
 public class FetchWiki {
     public static void main(String[] args) throws Exception {
-        PrintWriter writer;
-        for (int i = 0; i < 5; i++) {
-            String cont = getContent(FetchFreq.getRandom().getWord());
-            writer = new PrintWriter(i + ".txt");
-            writer.println(cont);
-            writer.flush();
-        }
+//        PrintWriter writer;
+//        for (int i = 0; i < 5; i++) {
+//            String cont = getContent(FetchFreq.getRandom().getWord());
+//            writer = new PrintWriter(i + ".txt");
+//            writer.println(cont);
+//            writer.flush();
+//        }
+
+        System.out.println(findWord("переориентировать").toPublish());
 
     }
     /**
@@ -81,7 +83,7 @@ public class FetchWiki {
                 result = result.replaceAll("\\[править\\]", "");
                 //prevent VK markup expanding
                 result = result.replaceAll("\\*", "* ");
-                result = result.replaceAll("◆\\s+Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
+                result = result.replaceAll("◆\\s*Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
                 result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Национального\\s+корпуса\\s+русского\\s+языка,\\s+см\\.\\s+Список\\s+литературы\\)", "");
             }
         }
@@ -99,6 +101,7 @@ public class FetchWiki {
         if (a.length > 1) {
             a = a[1].split("(?m)^\n");
             result = a[0];
+            result = result.trim();
         }
         return result;
     }
@@ -109,7 +112,7 @@ public class FetchWiki {
     private static String parseMeaning(String content) {
         String result = parseParagraph(content, "Значение");
         if (result != null)
-            result = result.replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "");
+            result = result.replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "").trim();
         return result;
     }
     /**
@@ -117,7 +120,7 @@ public class FetchWiki {
      * which is detected by "??"
      */
     private static String parseEtymology(String content) {
-        String result = parseParagraph(content, "Этимология");;
+        String result = parseParagraph(content, "Этимология");
         if (result != null && result.indexOf("??") > 0)
             result = null;
         return result;
@@ -125,7 +128,7 @@ public class FetchWiki {
 
     /**
      * extracts word by syllables.<br>
-     * Considered that target line between "Морфологические и синтаксические свойства" and "Значение" lines
+     * Considered that target line is between "Морфологические и синтаксические свойства" and "Значение" lines
      * as well as between empty lines and syllables word is similar with required word.
      * @return word by syllables or null if doesn't exists
      */
@@ -153,5 +156,4 @@ public class FetchWiki {
 
         return result;
     }
-    //TODO parse слово по ударениям
 }

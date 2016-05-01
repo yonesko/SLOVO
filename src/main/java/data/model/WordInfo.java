@@ -40,13 +40,13 @@ public class WordInfo {
             result.append(syllables.toUpperCase());
         else
             result.append(name.toUpperCase());
-        if (meaning != null) {
+        if (meaning != null && !meaning.isEmpty()) {
             result.append('\n');
             result.append("ЗНАЧЕНИЕ:");
             result.append('\n');
             result.append(meaning);
         }
-        if (etymology != null) {
+        if (etymology != null && !etymology.isEmpty()) {
             result.append('\n');
             result.append("ЭТИМОЛОГИЯ:");
             result.append('\n');

@@ -19,10 +19,11 @@ import java.util.*;
  * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long PORTION_SIZE = 5;
+    private static final long PORTION_SIZE = 6;
     private static List<FreqEntity> candidates;
     private static final Queue<String> wantedWords = new LinkedList<>(Arrays.asList(new String[]{
-
+            "канитель",
+            "осовелый"
     }));
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
@@ -32,46 +33,45 @@ public class Main {
 
         candidates = FetchFreq.getFreqDict();
         published = VK.getPosts("owner");
-
-
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.APRIL, 14, 0, 0);
+        //set most recent post time
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 1, 10, 0);
         System.out.println("lastPostTime is " + lastPostTime);
-
+        //add manually added words to the candidate list
+        for (String wantedWord : wantedWords)
+            candidates.add(FetchFreq.get(wantedWord));
         //remove already published from candidates
-        for (WallPost s : published)
-            if (candidates.contains(FetchFreq.get(s.getWord())))
-                candidates.remove(FetchFreq.get(s.getWord()));
+        for (WallPost post : published) {
+            FreqEntity word = FetchFreq.get(post.getWord());
+            if (candidates.contains(word))
+                candidates.remove(word);
+        }
 
         System.out.println("candidates size=" +candidates.size());
 
         nextPostTime = nextPostTime.with(new NextPostAdjuster());
         //publish portion
         for (int i = 0; i < PORTION_SIZE && candidates.size() > 0; i++) {
+            boolean isAppropriate = false, isPosted;
             System.out.println("---------" + i + "----------");
 
             nextPost = nextWord();
+            isAppropriate = nextPost != null && nextPost.isPublishable();
 
-            if (nextPost != null) {
-                if (nextPost.isPublishable()) {
-                    System.out.println(String.format(
-                            "Trying to publish %s to date %s",
-                            nextPost.getName(),
-                            nextPostTime));
+            if(isAppropriate) {
+                System.out.println(String.format(
+                        "Trying to publish %s to date %s",
+                        nextPost.getName(),
+                        nextPostTime));
+                //post in public
+                isPosted = VK.wallPost(nextPost.toPublish(), nextPostTime);
+                //move time forward
+                nextPostTime = nextPostTime.with(new NextPostAdjuster());
 
-                    boolean isPosted = VK.wallPost(nextPost.toPublish(), nextPostTime);
-
-                    System.out.println("is posted :" + isPosted);
-
-                    nextPostTime = nextPostTime.with(new NextPostAdjuster());
-                } else {
-                    i--;
-                    System.out.println("NOT OK: word " + nextPost.getName() + " is not publishable");
-                }
-            }
-            else {
+                System.out.println("is posted :" + isPosted);
+            } else {
                 i--;
-                System.out.println("NOT OK: word is absent from wiki");
             }
+
             System.out.println("-------------------");
         }
     }
@@ -81,7 +81,7 @@ public class Main {
         FreqEntity fe;
 
         if (wantedWords != null && wantedWords.size() > 0)
-            fe = FetchFreq.get(wantedWords.poll());
+            fe = FetchFreq.getDirect(wantedWords.poll());
         else
             fe = candidates.get(random.nextInt(candidates.size()));
 
@@ -90,9 +90,7 @@ public class Main {
         return result;
     }
 }
-//TODO advertisment
-//TODO images
-//TODO schedule
+//TODO images https://ru.wiktionary.org/wiki/%D0%B1%D0%BB%D0%BE%D1%85%D0%B0 канарейка
 /*
 TODO
 Фразеологизмы и устойчивые сочетания

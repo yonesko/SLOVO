@@ -10,10 +10,10 @@ import java.time.temporal.TemporalAdjuster;
  */
 
 /**
- * adds 5 hours
+ * adds DELAY_H hours
  */
 public class NextPostAdjuster implements TemporalAdjuster {
-    private static final int DELAY_H = 5;
+    private static final int DELAY_H = 4;
     @Override
     public Temporal adjustInto(Temporal input) {
         LocalDateTime timestamp = LocalDateTime.from(input);
