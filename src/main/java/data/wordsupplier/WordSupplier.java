@@ -1,4 +1,4 @@
-package data.dao.wordsupplier;
+package data.wordsupplier;
 
 /**
  * Created by gleb on 03.05.16.

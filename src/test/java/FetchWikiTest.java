@@ -1,4 +1,4 @@
-import data.dao.FetchWiki;
+import data.FetchWiki;
 import data.model.WordInfo;
 import org.junit.Assert;
 import org.junit.Test;

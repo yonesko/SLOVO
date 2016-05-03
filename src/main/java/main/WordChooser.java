@@ -1,9 +1,9 @@
 package main;
 
-import data.dao.FetchWiki;
-import data.dao.wordsupplier.AdHocWords;
-import data.dao.wordsupplier.FetchFreq;
-import data.dao.wordsupplier.WordSupplier;
+import data.FetchWiki;
+import data.wordsupplier.AdHocWS;
+import data.wordsupplier.FrequencyWS;
+import data.wordsupplier.WordSupplier;
 import data.model.WordInfo;
 
 /**
@@ -16,8 +16,8 @@ public class WordChooser {
      * 0 index for most priority.
      */
     private WordSupplier WSupps[] = {
-            new AdHocWords(),
-            new FetchFreq()
+            new AdHocWS(),
+            new FrequencyWS()
     };
     /**
      * @return null only if suppliers are empty

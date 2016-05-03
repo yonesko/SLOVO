@@ -1,15 +1,17 @@
-package data.dao.wordsupplier;
+package data.wordsupplier;
 
-import data.dao.wordsupplier.WordSupplier;
 import data.model.FreqEntity;
 
 import java.sql.*;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
 /**
  * Frequency dictionary
  */
-public class FetchFreq implements WordSupplier{
+public class FrequencyWS implements WordSupplier {
     private static List<FreqEntity> freqDict;
     private static Connection conn;
 
@@ -17,7 +19,6 @@ public class FetchFreq implements WordSupplier{
         for (FreqEntity freqEntity : freqDict)
             if (freqEntity.getName().equalsIgnoreCase("канитель"))
                 System.out.println(freqEntity);
-
     }
 
     @Override

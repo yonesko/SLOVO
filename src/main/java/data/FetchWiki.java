@@ -1,11 +1,10 @@
-package data.dao;
+package data;
 
 import data.model.WordInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.Scanner;
@@ -17,7 +16,7 @@ public class FetchWiki {
     public static void main(String[] args) throws Exception {
 //        PrintWriter writer;
 //        for (int i = 0; i < 5; i++) {
-//            String cont = getContent(FetchFreq.getRandom().getName());
+//            String cont = getContent(FrequencyWS.getRandom().getName());
 //            writer = new PrintWriter(i + ".txt");
 //            writer.println(cont);
 //            writer.flush();
@@ -107,7 +106,7 @@ public class FetchWiki {
     }
 
     /**
-     * {@link data.dao.FetchWiki#parseParagraph Parses} meaning paragraph removing empty items from list.
+     * {@link FetchWiki#parseParagraph Parses} meaning paragraph removing empty items from list.
      */
     private static String parseMeaning(String content) {
         String result = parseParagraph(content, "Значение");
@@ -116,7 +115,7 @@ public class FetchWiki {
         return result;
     }
     /**
-     * {@link data.dao.FetchWiki#parseParagraph Parses} etymology paragraph avoiding unfinished paragraph
+     * {@link FetchWiki#parseParagraph Parses} etymology paragraph avoiding unfinished paragraph
      * which is detected by "??"
      */
     private static String parseEtymology(String content) {
