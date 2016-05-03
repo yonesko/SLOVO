@@ -12,8 +12,8 @@ public class WordInfo {
 
     public WordInfo(String name, String meaning, String etymology, String syllables) {
         this.name = name;
-        this.meaning = meaning == null ? null : meaning.trim();
-        this.etymology = etymology == null ? null : etymology.trim();
+        this.meaning = meaning;
+        this.etymology = etymology;
         this.syllables = syllables;
     }
 

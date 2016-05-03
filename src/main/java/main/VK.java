@@ -26,9 +26,9 @@ https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https
  */
 public class VK {
     //prod
-    private final static String OWNER_ID = "118193284";
+//    private final static String OWNER_ID = "118193284";
     //test
-//    private final static String OWNER_ID = "119022967";
+    private final static String OWNER_ID = "119022967";
     private final static String ACCES_TOKEN = "7c615dcc1c06ead089152605fc31e1a9598d7b01f2c6f8e77cfe4468028bd1df542bc0bfa9a82c6618ac9";
 //
     public static void main(String[] args) throws Exception {

@@ -35,6 +35,7 @@ public class FetchWiki {
      * word or null if fail
      */
     public static WordInfo findWord(String word) {
+        word = word.toLowerCase();
         String content = null;
         WordInfo result = null;
         try {
@@ -51,7 +52,6 @@ public class FetchWiki {
     }
 
     private static String getContent(String word) throws IOException {
-        word = word.toLowerCase();
         StringBuilder sbPage = new StringBuilder();
         String result = null;
         String cmds[] = {
@@ -132,7 +132,7 @@ public class FetchWiki {
      * as well as between empty lines and syllables word is similar with required word.
      * @return word by syllables or null if doesn't exists
      */
-    public static String parseSyllables(String content, String word) {
+    private static String parseSyllables(String content, String word) {
         String result = null, soil, candidate;
         Scanner scanner;
         Collator collator = Collator.getInstance(Locale.forLanguageTag("Cyrl"));
@@ -154,6 +154,8 @@ public class FetchWiki {
             }
         }
 
+        if (result != null)
+            result = result.trim();
         return result;
     }
 }

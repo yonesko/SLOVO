@@ -1,5 +1,6 @@
-package data.dao;
+package data.dao.wordsupplier;
 
+import data.dao.wordsupplier.WordSupplier;
 import data.model.FreqEntity;
 
 import java.sql.*;
@@ -8,7 +9,7 @@ import java.util.*;
 /**
  * Frequency dictionary
  */
-public class FetchFreq {
+public class FetchFreq implements WordSupplier{
     private static List<FreqEntity> freqDict;
     private static Connection conn;
 
@@ -17,6 +18,16 @@ public class FetchFreq {
             if (freqEntity.getName().equalsIgnoreCase("канитель"))
                 System.out.println(freqEntity);
 
+    }
+
+    @Override
+    public String nextWord() {
+        return getRandom().getName();
+    }
+
+    private static FreqEntity getRandom() {
+        Random random = new Random();
+        return freqDict.get(random.nextInt(freqDict.size()));
     }
 
     static {
@@ -44,28 +55,6 @@ public class FetchFreq {
 
     }
 
-    public static List<FreqEntity> getFreqDict() {
-        return new ArrayList<>(freqDict);
-    }
-
-    public static List<String> getNameDict() {
-        List<String> names = new ArrayList<>();
-        for (FreqEntity freqEntity : freqDict)
-            names.add(freqEntity.getName());
-        return names;
-    }
-
-    /**
-     * Searches in list which cat be filtered (by Freq for example)
-     * @return word or null if doesn't exists
-     */
-    public static FreqEntity get(String word) {
-        for (FreqEntity freqEntity : freqDict)
-            if (freqEntity.getName().equalsIgnoreCase(word))
-                return freqEntity;
-        return null;
-    }
-
     private static void initDict() throws ClassNotFoundException, SQLException {
         freqDict = new LinkedList<>();
 
@@ -81,12 +70,5 @@ public class FetchFreq {
                         results.getDouble(("Freq"))));
 
         getConn().close();
-    }
-
-    private FetchFreq() {}
-
-    public static FreqEntity getRandom() {
-        Random random = new Random();
-        return freqDict.get(random.nextInt(freqDict.size()));
     }
 }
