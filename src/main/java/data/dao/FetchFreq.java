@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * Created by gleb on 03.04.16.
+ * Frequency dictionary
  */
 public class FetchFreq {
     private static List<FreqEntity> freqDict;
@@ -14,7 +14,7 @@ public class FetchFreq {
 
     public static void main(String...args) throws SQLException {
         for (FreqEntity freqEntity : freqDict)
-            if (freqEntity.getWord().equalsIgnoreCase("канитель"))
+            if (freqEntity.getName().equalsIgnoreCase("канитель"))
                 System.out.println(freqEntity);
 
     }
@@ -48,30 +48,11 @@ public class FetchFreq {
         return new ArrayList<>(freqDict);
     }
 
-    /**
-     * Searches in whole file
-     * @return word or null if doesn't exists
-     */
-    public static FreqEntity getDirect(String word) {
-        FreqEntity result = null;
-        Statement stmt = null;
-        try {
-            stmt = getConn().createStatement();
-            ResultSet data = stmt.executeQuery(String.format("SELECT Lemma, PoS, Freq FROM freqrnc2011 " +
-                    "WHERE LOWER('%s') = LOWER(Lemma)",
-                    word));
-
-            while (data.next())
-                result = new FreqEntity(
-                        data.getString("Lemma"),
-                        data.getString("PoS"),
-                        data.getDouble(("Freq")));
-
-            getConn().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
+    public static List<String> getNameDict() {
+        List<String> names = new ArrayList<>();
+        for (FreqEntity freqEntity : freqDict)
+            names.add(freqEntity.getName());
+        return names;
     }
 
     /**
@@ -80,7 +61,7 @@ public class FetchFreq {
      */
     public static FreqEntity get(String word) {
         for (FreqEntity freqEntity : freqDict)
-            if (freqEntity.getWord().equalsIgnoreCase(word))
+            if (freqEntity.getName().equalsIgnoreCase(word))
                 return freqEntity;
         return null;
     }

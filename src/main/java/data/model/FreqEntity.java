@@ -4,18 +4,18 @@ package data.model;
  * Created by gleb on 03.04.16.
  */
 public class FreqEntity {
-    private final String word;
+    private final String name;
     private final String pos;
     private final double imp;
 
     public FreqEntity(String word, String pos, double imp) {
-        this.word = word;
+        this.name = word;
         this.pos = pos;
         this.imp = imp;
     }
 
-    public String getWord() {
-        return word;
+    public String getName() {
+        return name;
     }
 
     public String getPos() {
@@ -29,7 +29,7 @@ public class FreqEntity {
     @Override
     public String toString() {
         return "data.model.FreqEntity{" +
-                "word='" + word + '\'' +
+                "name='" + name + '\'' +
                 ", pos='" + pos + '\'' +
                 ", imp=" + imp +
                 '}';

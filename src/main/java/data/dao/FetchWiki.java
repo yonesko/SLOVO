@@ -17,7 +17,7 @@ public class FetchWiki {
     public static void main(String[] args) throws Exception {
 //        PrintWriter writer;
 //        for (int i = 0; i < 5; i++) {
-//            String cont = getContent(FetchFreq.getRandom().getWord());
+//            String cont = getContent(FetchFreq.getRandom().getName());
 //            writer = new PrintWriter(i + ".txt");
 //            writer.println(cont);
 //            writer.flush();

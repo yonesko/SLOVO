@@ -32,10 +32,6 @@ public class WallPost {
     public WallPost() {
     }
 
-    public String getWord() {
-        return text.substring(0, text.indexOf("<br>"));
-    }
-
     @Override
     public String toString() {
         return "WallPost{" +
