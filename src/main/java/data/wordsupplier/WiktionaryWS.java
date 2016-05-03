@@ -1,34 +1,46 @@
 package data.wordsupplier;
 
-import data.model.FreqEntity;
+import data.model.WikiWord;
+import data.model.Word;
 
 import java.sql.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 /**
- * Frequency dictionary
+ * Frequency dictionary + Wikrionary
  */
-public class FrequencyWS implements WordSupplier {
-    private static List<FreqEntity> freqDict;
+public class WiktionaryWS implements WordSupplier {
+    private static List<String> lemmas;
     private static Connection conn;
+    private static final Queue<String> wantedWords = new LinkedList<>(Arrays.asList(new String[]{
+    }));
 
     public static void main(String...args) throws SQLException {
-        for (FreqEntity freqEntity : freqDict)
-            if (freqEntity.getName().equalsIgnoreCase("канитель"))
+        for (String freqEntity : lemmas)
+            if (freqEntity.equalsIgnoreCase("канитель"))
                 System.out.println(freqEntity);
     }
 
     @Override
-    public String nextWord() {
-        return getRandom().getName();
+    public Word nextWord() {
+        WikiWord result;
+
+        do {
+            result = FetchWiki.findWord(nextLemma());
+        } while (result == null);
+
+        return result;
     }
 
-    private static FreqEntity getRandom() {
+    private String nextLemma() {
+        String result;
         Random random = new Random();
-        return freqDict.get(random.nextInt(freqDict.size()));
+
+        result = nextWantedLemma();
+        if (result == null)
+            result = lemmas.get(random.nextInt(lemmas.size()));
+
+        return result;
     }
 
     static {
@@ -57,7 +69,7 @@ public class FrequencyWS implements WordSupplier {
     }
 
     private static void initDict() throws ClassNotFoundException, SQLException {
-        freqDict = new LinkedList<>();
+        lemmas = new LinkedList<>();
 
         Statement stmt = getConn().createStatement();
 
@@ -65,11 +77,23 @@ public class FrequencyWS implements WordSupplier {
 
         while (results.next())
             if (results.getDouble(("Freq")) < 1.0)
-                freqDict.add(new FreqEntity(
-                        results.getString("Lemma"),
-                        results.getString("PoS"),
-                        results.getDouble(("Freq"))));
+                lemmas.add(results.getString("Lemma"));
 
         getConn().close();
+    }
+
+    /**
+     * @return null only if empty
+     */
+    private String nextWantedLemma() {
+        String result;
+
+        do {
+            result = wantedWords.poll();
+            if (result != null && !result.isEmpty())
+                break;
+        } while (wantedWords.size() > 0);
+
+        return result;
     }
 }

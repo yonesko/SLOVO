@@ -1,6 +1,6 @@
 package main;
 
-import data.model.WordInfo;
+import data.model.Word;
 import org.json.simple.parser.ParseException;
 import util.NextPostAdjuster;
 
@@ -18,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
         WordChooser wc = new WordChooser();
-        WordInfo nextPost;
+        Word nextPost;
         LocalDateTime lastPostTime, nextPostTime;
 
         //set most recent post time
@@ -27,15 +27,11 @@ public class Main {
 
         //publish portion
         nextPostTime = nextPostTime.with(new NextPostAdjuster());
-        for (int i = 0; i < PORTION_SIZE && (nextPost = wc.nextWordInfo()) != null; i++) {
+        for (int i = 0; i < PORTION_SIZE && (nextPost = wc.nextWord()) != null; i++) {
             boolean isPosted;
             System.out.println("---------" + i + "----------");
 
             if(nextPost.isPublishable()) {
-                System.out.println(String.format(
-                        "Trying to publish %s to date %s",
-                        nextPost.getName(),
-                        nextPostTime));
                 //post in public
                 isPosted = VK.wallPost(nextPost.toPublish(), nextPostTime);
                 //move time forward

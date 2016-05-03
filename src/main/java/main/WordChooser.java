@@ -1,51 +1,31 @@
 package main;
 
-import data.FetchWiki;
-import data.wordsupplier.AdHocWS;
-import data.wordsupplier.FrequencyWS;
+import data.model.Word;
+import data.wordsupplier.AphorismWS;
+import data.wordsupplier.WiktionaryWS;
 import data.wordsupplier.WordSupplier;
-import data.model.WordInfo;
+
+import java.util.Random;
 
 /**
  * Implements logic of choosing word from word suppliers.
  * Created by gleb on 03.05.16.
  */
 public class WordChooser {
-    /**
-     * Word suppliers array represents priority.
-     * 0 index for most priority.
-     */
-    private WordSupplier WSupps[] = {
-            new AdHocWS(),
-            new FrequencyWS()
+    private WordSupplier ws[] = {
+            new WiktionaryWS(),
+            new AphorismWS()
     };
     /**
      * @return null only if suppliers are empty
      */
-    public WordInfo nextWordInfo() {
-        WordInfo result = null;
-        String word;
+    public Word nextWord() {
+        Random ran = new Random();
+        Word result = null;
 
-        while (result == null) {
-            word = nextWord();
-            if (word == null)
-                break;
-            else
-                result = FetchWiki.findWord(word);
-        }
+        while (result == null)
+            result = ws[ran.nextInt(ws.length)].nextWord();
 
-        return result;
-    }
-    /**
-     * @return null only if suppliers are empty
-     */
-    private String nextWord() {
-        String result = null;
-        for (WordSupplier ws : WSupps) {
-            result = ws.nextWord();
-            if (result != null)
-                break;
-        }
         return result;
     }
 }

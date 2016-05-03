@@ -1,6 +1,6 @@
-package data;
+package data.wordsupplier;
 
-import data.model.WordInfo;
+import data.model.WikiWord;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,11 +12,11 @@ import java.util.Scanner;
 /**
  * Created by gleb on 31.03.16.
  */
-public class FetchWiki {
+class FetchWiki {
     public static void main(String[] args) throws Exception {
 //        PrintWriter writer;
 //        for (int i = 0; i < 5; i++) {
-//            String cont = getContent(FrequencyWS.getRandom().getName());
+//            String cont = getContent(WiktionaryWS.getRandom().getName());
 //            writer = new PrintWriter(i + ".txt");
 //            writer.println(cont);
 //            writer.flush();
@@ -33,17 +33,17 @@ public class FetchWiki {
      * @return
      * word or null if fail
      */
-    public static WordInfo findWord(String word) {
+    public static WikiWord findWord(String word) {
         word = word.toLowerCase();
         String content = null;
-        WordInfo result = null;
+        WikiWord result = null;
         try {
             content = getContent(word);
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (content != null)
-            result = new WordInfo(word,
+            result = new WikiWord(word,
                     parseMeaning(content),
                     parseEtymology(content),
                     parseSyllables(content, word));
