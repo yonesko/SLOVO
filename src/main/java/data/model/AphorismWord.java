@@ -13,7 +13,7 @@ public class AphorismWord implements Word{
 
     @Override
     public boolean isPublishable() {
-        return content != null & !content.isEmpty();
+        return content != null && content.length() > 5;
     }
 
     @Override
