@@ -22,7 +22,7 @@ public class Main {
         LocalDateTime lastPostTime, nextPostTime;
 
         //set most recent post time
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 5, 16, 0);
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 4, 16, 0);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //publish portion

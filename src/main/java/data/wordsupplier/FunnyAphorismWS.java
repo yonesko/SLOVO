@@ -3,7 +3,9 @@ package data.wordsupplier;
 import data.model.AphorismWord;
 import data.model.Word;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +13,7 @@ import java.util.Random;
 /**
  * Created by gleb on 03.05.16.
  */
-public class AphorismWS implements WordSupplier{
+public class FunnyAphorismWS implements WordSupplier{
     private static List<Word> dict = new ArrayList<>();
     @Override
     public Word nextWord() {
@@ -19,7 +21,7 @@ public class AphorismWS implements WordSupplier{
     }
 
     public static void main(String...args) throws Throwable {
-        new AphorismWS().nextWord();
+        new FunnyAphorismWS().nextWord();
     }
 
     static {
@@ -31,7 +33,7 @@ public class AphorismWS implements WordSupplier{
     }
 
     private static void initDict() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader("resources/aforizmi.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("resources/veselie_aforizmi.txt"));
         String line;
         StringBuilder buf = new StringBuilder();
 

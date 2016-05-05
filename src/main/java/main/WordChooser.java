@@ -1,7 +1,7 @@
 package main;
 
 import data.model.Word;
-import data.wordsupplier.AphorismWS;
+import data.wordsupplier.FunnyAphorismWS;
 import data.wordsupplier.WiktionaryWS;
 import data.wordsupplier.WordSupplier;
 
@@ -13,8 +13,8 @@ import java.util.Random;
  */
 public class WordChooser {
     private WordSupplier ws[] = {
-            new WiktionaryWS(),
-            new AphorismWS()
+//            new WiktionaryWS(),
+            new FunnyAphorismWS()
     };
     /**
      * @return null only if suppliers are empty
