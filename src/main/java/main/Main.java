@@ -14,7 +14,7 @@ import java.time.Month;
  * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long PORTION_SIZE = 5;
+    private static final long PORTION_SIZE = 12;
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
         WordChooser wc = new WordChooser();

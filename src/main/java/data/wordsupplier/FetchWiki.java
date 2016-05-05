@@ -84,6 +84,7 @@ class FetchWiki {
                 result = result.replaceAll("\\*", "* ");
                 result = result.replaceAll("◆\\s*Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
                 result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Национального\\s+корпуса\\s+русского\\s+языка,\\s+см\\.\\s+Список\\s+литературы\\)", "");
+                result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Викитеки\\)", "");
             }
         }
         return result;
