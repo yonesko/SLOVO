@@ -14,15 +14,15 @@ import java.time.Month;
  * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long PORTION_SIZE = 12;
+    private static final long PORTION_SIZE = 36;
 
-    public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException {
+    public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException, InterruptedException {
         WordChooser wc = new WordChooser();
         Word nextPost;
         LocalDateTime lastPostTime, nextPostTime;
 
         //set most recent post time
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 4, 16, 0);
+        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 7, 16, 0);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //publish portion

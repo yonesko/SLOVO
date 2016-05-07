@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class WordChooser {
     private WordSupplier ws[] = {
-//            new WiktionaryWS(),
+            new WiktionaryWS(),
             new FunnyAphorismWS()
     };
     /**

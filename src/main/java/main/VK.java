@@ -20,12 +20,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /*
 
 https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,offline&response_type=token&v=5.50
  */
 public class VK {
+    /**
+     * Request to VK api per second bound.
+     */
+    private final static int RPS_BOUND = 5;
     //prod
     private final static String OWNER_ID = "118193284";
     //test
@@ -41,7 +46,7 @@ public class VK {
      * @param date epoch in seconds
      * @return true only if post_id in server's response exists
      */
-    public static boolean wallPost(String message, LocalDateTime date) throws IOException, ParseException {
+    public static boolean wallPost(String message, LocalDateTime date) throws IOException, ParseException, InterruptedException {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
@@ -65,7 +70,10 @@ public class VK {
         wr.flush();
         wr.close();
 
+        TimeUnit.MILLISECONDS.sleep(TimeUnit.SECONDS.toMillis(1) / RPS_BOUND);
+
         int responseCode = con.getResponseCode();
+
         StringBuilder response = new StringBuilder();
         if (responseCode == 200) {
             BufferedReader in = new BufferedReader(
