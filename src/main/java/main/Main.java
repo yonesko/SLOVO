@@ -14,7 +14,7 @@ import java.time.Month;
  * If post at nextPostTime fails nextPostTime is moved forward
  */
 public class Main {
-    private static final long PORTION_SIZE = 36;
+    private static final long PORTION_SIZE = 6*10;
 
     public static void main(String[] args) throws ParseException, IOException, URISyntaxException, java.text.ParseException, InterruptedException {
         WordChooser wc = new WordChooser();
@@ -22,7 +22,8 @@ public class Main {
         LocalDateTime lastPostTime, nextPostTime;
 
         //set most recent post time
-        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 7, 16, 0);
+//        lastPostTime = nextPostTime = LocalDateTime.of(2016, Month.MAY, 7, 16, 0);
+        lastPostTime = nextPostTime = LocalDateTime.now().minus(NextPostAdjuster.DELAY);
         System.out.println("lastPostTime is " + lastPostTime);
 
         //publish portion

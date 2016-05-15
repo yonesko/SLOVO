@@ -20,6 +20,11 @@ public class FunnyAphorismWS implements WordSupplier{
        return dict.get(new Random().nextInt(dict.size()));
     }
 
+    @Override
+    public void resultOK() {
+
+    }
+
     public static void main(String...args) throws Throwable {
         new FunnyAphorismWS().nextWord();
     }

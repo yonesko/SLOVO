@@ -10,4 +10,5 @@ public interface WordSupplier {
      * @return null only if supplier is empty
      */
     Word nextWord();
+    void resultOK();
 }

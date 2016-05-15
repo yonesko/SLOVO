@@ -13,6 +13,7 @@ public class WiktionaryWS implements WordSupplier {
     private static List<String> lemmas;
     private static Connection conn;
     private static final Queue<String> wantedWords = new LinkedList<>(Arrays.asList(new String[]{
+            "ёрник",
     }));
 
     public static void main(String...args) throws SQLException {
@@ -30,6 +31,11 @@ public class WiktionaryWS implements WordSupplier {
         } while (result == null);
 
         return result;
+    }
+
+    @Override
+    public void resultOK() {
+
     }
 
     private String nextLemma() {
