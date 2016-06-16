@@ -17,18 +17,6 @@ public class WikiWord implements Word {
         this.syllables = syllables;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getMeaning() {
-        return meaning;
-    }
-
-    public String getEtymology() {
-        return etymology;
-    }
-
     public boolean isPublishable() {
         return meaning != null && meaning.length() > THRESHOLD ||
                 etymology != null && etymology.length() > THRESHOLD;
@@ -55,24 +43,24 @@ public class WikiWord implements Word {
         return result.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        WikiWord wordInfo = (WikiWord) o;
-
-        if (!name.equals(wordInfo.name)) return false;
-        if (meaning != null ? !meaning.equals(wordInfo.meaning) : wordInfo.meaning != null) return false;
-        return etymology != null ? etymology.equals(wordInfo.etymology) : wordInfo.etymology == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + (meaning != null ? meaning.hashCode() : 0);
-        result = 31 * result + (etymology != null ? etymology.hashCode() : 0);
-        return result;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        WikiWord wordInfo = (WikiWord) o;
+//
+//        if (!name.equals(wordInfo.name)) return false;
+//        if (meaning != null ? !meaning.equals(wordInfo.meaning) : wordInfo.meaning != null) return false;
+//        return etymology != null ? etymology.equals(wordInfo.etymology) : wordInfo.etymology == null;
+//
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = name.hashCode();
+//        result = 31 * result + (meaning != null ? meaning.hashCode() : 0);
+//        result = 31 * result + (etymology != null ? etymology.hashCode() : 0);
+//        return result;
+//    }
 }

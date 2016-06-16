@@ -7,7 +7,6 @@ import util.NextPostAdjuster;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
-import java.time.Month;
 
 /**
  * User specifies lastPostTime and the program generates PORTION_SIZE posts with hour {@link NextPostAdjuster delay}.<br>

@@ -10,30 +10,20 @@ import java.util.Locale;
 import java.util.Scanner;
 
 /**
- * Created by gleb on 31.03.16.
+ * Created by gleb on 16.06.16.
  */
-class FetchWiki {
-    public static void main(String[] args) throws Exception {
-//        PrintWriter writer;
-//        for (int i = 0; i < 5; i++) {
-//            String cont = getContent(WiktionaryWS.getRandom().getName());
-//            writer = new PrintWriter(i + ".txt");
-//            writer.println(cont);
-//            writer.flush();
-//        }
-
-        System.out.println(findWord("переориентировать").toPublish());
-
-    }
+class WikiFetcher {
     /**
      * Makes http query to the wiktionary and parse page.<br>
      * If word exists at wiktionary and at least one parse is successful
      * return word; else null.
+     *
      * @param word to find at wiktionary
-     * @return
-     * word or null if fail
+     * @return word or null if fail or word is null or empty
      */
-    public static WikiWord findWord(String word) {
+    public WikiWord findWord(String word) {
+        if (word == null || word.isEmpty())
+            return null;
         word = word.toLowerCase();
         String content = null;
         WikiWord result = null;
@@ -50,7 +40,7 @@ class FetchWiki {
         return result;
     }
 
-    private static String getContent(String word) throws IOException {
+    private String getContent(String word) throws IOException {
         StringBuilder sbPage = new StringBuilder();
         String result = null;
         String cmds[] = {
@@ -89,13 +79,15 @@ class FetchWiki {
         }
         return result;
     }
+
     /**
      * extracts meaning paragraph of the page.<br>
      * Considered that paragraph is text surrounded with empty lines followed by line starting with para.<br>
      * Para is the only word at this line.
+     *
      * @return meaning or null if doesn't exists
      */
-    private static String parseParagraph(String content, String para) {
+    private String parseParagraph(String content, String para) {
         String result = null;
         String a[] = content.split("(?m)^" + para + "\\s*");
         if (a.length > 1) {
@@ -107,19 +99,20 @@ class FetchWiki {
     }
 
     /**
-     * {@link FetchWiki#parseParagraph Parses} meaning paragraph removing empty items from list.
+     * {@link WikiFetcher#parseParagraph Parses} meaning paragraph removing empty items from list.
      */
-    private static String parseMeaning(String content) {
+    private String parseMeaning(String content) {
         String result = parseParagraph(content, "Значение");
         if (result != null)
             result = result.replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "").trim();
         return result;
     }
+
     /**
-     * {@link FetchWiki#parseParagraph Parses} etymology paragraph avoiding unfinished paragraph
+     * {@link WikiFetcher#parseParagraph Parses} etymology paragraph avoiding unfinished paragraph
      * which is detected by "??"
      */
-    private static String parseEtymology(String content) {
+    private String parseEtymology(String content) {
         String result = parseParagraph(content, "Этимология");
         if (result != null && result.indexOf("??") > 0)
             result = null;
@@ -130,9 +123,10 @@ class FetchWiki {
      * extracts word by syllables.<br>
      * Considered that target line is between "Морфологические и синтаксические свойства" and "Значение" lines
      * as well as between empty lines and syllables word is similar with required word.
+     *
      * @return word by syllables or null if doesn't exists
      */
-    private static String parseSyllables(String content, String word) {
+    private String parseSyllables(String content, String word) {
         String result = null, soil, candidate;
         Scanner scanner;
         Collator collator = Collator.getInstance(Locale.forLanguageTag("Cyrl"));

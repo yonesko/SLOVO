@@ -14,7 +14,7 @@ import java.util.Random;
  * Created by gleb on 03.05.16.
  */
 public class FunnyAphorismWS implements WordSupplier{
-    private static List<Word> dict = new ArrayList<>();
+    private static List<Word> dict = new ArrayList<>();//TODO to fetcher
     @Override
     public Word nextWord() {
        return dict.get(new Random().nextInt(dict.size()));
