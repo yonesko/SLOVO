@@ -6,6 +6,8 @@ import data.model.Word;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,13 +34,16 @@ public class FunnyAphorismWS implements WordSupplier{
     static {
         try {
             initDict();
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private static void initDict() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader("resources/veselie_aforizmi.txt"));
+    private static void initDict() throws IOException, URISyntaxException {
+        BufferedReader reader = new BufferedReader(
+                new FileReader(
+                        Paths.get(
+                                ClassLoader.getSystemResource("veselie_aforizmi.txt").toURI()).toFile()));
         String line;
         StringBuilder buf = new StringBuilder();
 

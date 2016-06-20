@@ -5,6 +5,8 @@ import data.model.WikiWord;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.Scanner;
@@ -29,7 +31,7 @@ class WikiFetcher {
         WikiWord result = null;
         try {
             content = getContent(word);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         if (content != null)
@@ -40,11 +42,11 @@ class WikiFetcher {
         return result;
     }
 
-    private String getContent(String word) throws IOException {
+    private String getContent(String word) throws IOException, URISyntaxException {
         StringBuilder sbPage = new StringBuilder();
         String result = null;
         String cmds[] = {
-                "resources/getPage.sh",
+                Paths.get(ClassLoader.getSystemResource("getPage.sh").toURI()).toString(),
                 word
         };
         Runtime rt = Runtime.getRuntime();

@@ -16,6 +16,18 @@ public class WordChooser {
             new WiktionaryWS(),
             new FunnyAphorismWS()
     };
+
+    private int type;
+
+    public WordChooser() {
+        try {
+            type = Integer.parseInt(PropManager.getProp("postAlgo.wordChooser.algo.type"));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            type = 1;
+        }
+    }
+
     /**
      * @return null only if suppliers are empty
      */

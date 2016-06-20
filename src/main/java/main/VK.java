@@ -31,10 +31,7 @@ public class VK {
      * Request to VK api per second bound.
      */
     private final static int RPS_BOUND = 5;
-    //prod
-//    private final static String OWNER_ID = "118193284";
-    //test
-    private final static String OWNER_ID = "119022967";
+    private final static String OWNER_ID = PropManager.getProp("VK.ownerName");
     private final static String ACCES_TOKEN = "7c615dcc1c06ead089152605fc31e1a9598d7b01f2c6f8e77cfe4468028bd1df542bc0bfa9a82c6618ac9";
 //
     public static void main(String[] args) throws Exception {
@@ -46,7 +43,17 @@ public class VK {
      * @param date epoch in seconds
      * @return true only if post_id in server's response exists
      */
-    public static boolean wallPost(String message, LocalDateTime date) throws IOException, ParseException, InterruptedException {
+    public static boolean wallPost(String message, LocalDateTime date) {
+        boolean result;
+        try {
+            result = _wallPost(message, date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+        return result;
+    }
+    private static boolean _wallPost(String message, LocalDateTime date) throws Exception {
         List<String> query = new ArrayList<>();
         Map<String, String> pars = new HashMap<>();
         pars.put("owner_id", "-" + OWNER_ID);
@@ -89,20 +96,6 @@ public class VK {
         System.out.println(response.toString());
         return isWallPostSuccessful(response.toString());
     }
-    private static boolean isWallPostSuccessful(String response) throws ParseException {
-        boolean result = false;
-        JSONParser parser   = new JSONParser();
-        JSONObject jsonResp  = (JSONObject) parser.parse(response.toString());
-        JSONObject post = (JSONObject) jsonResp.get("response");
-
-        if (post == null)
-            result = false;
-        else
-            result = post.get("post_id") != null;
-
-        return result;
-    }
-
     /**
      * filter определяет, какие типы записей на стене необходимо получить.<br> Возможны следующие значения параметра:<br>
      suggests — предложенные записи на стене сообщества (доступно только при вызове с передачей access_token);<br>
@@ -121,6 +114,17 @@ public class VK {
                 result.addAll(getPosts(filter));
         return result;
 
+    }
+
+    private static boolean isWallPostSuccessful(String response) throws ParseException {
+        boolean result;
+        JSONParser parser = new JSONParser();
+        JSONObject jsonResp = (JSONObject) parser.parse(response);
+        JSONObject post = (JSONObject) jsonResp.get("response");
+
+        result = post != null && post.get("post_id") != null;
+
+        return result;
     }
 
     private static List<WallPost> getPosts(String filter) throws IOException, URISyntaxException, ParseException {
@@ -142,7 +146,7 @@ public class VK {
 
             JSONObject jsonResp  = (JSONObject) parser.parse(content.toString());
             JSONArray postsList = (JSONArray) jsonResp.get("response");
-            JSONObject unicPost  = null;
+            JSONObject unicPost;
             ObjectMapper mapper = new ObjectMapper();
             WallPost post;
 

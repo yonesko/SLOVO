@@ -1,18 +1,24 @@
 package data.wordsupplier;
 
+import main.PropManager;
 import org.relique.jdbc.csv.CsvDriver;
 
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.sql.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Properties;
+import java.util.Queue;
 
 /**
  * Created by gleb on 16.06.16.
  */
 public class LemmaFetcher {
     private ResultSet lemmas;
-    private Queue<String> wantedLemmas = new LinkedList<>(Arrays.asList(new String[]{
-//        "жеманный",
-    }));
+    private Queue<String> wantedLemmas = new LinkedList<>(
+            Arrays.asList(
+                    PropManager.getProp("LemmaFetcher.wantedLemmas").split(",")));
 
     private Connection conn;
 
@@ -55,14 +61,13 @@ public class LemmaFetcher {
     }
 
     public LemmaFetcher() {
-        Statement stmt = null;
+        Statement stmt;
         try {
             stmt = getConn().createStatement();
             lemmas = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     static {
@@ -74,13 +79,21 @@ public class LemmaFetcher {
     }
 
     private Connection getConn() {
-        Properties props = new java.util.Properties();
+        Properties props = new Properties();
         props.put("separator", "\t");
         props.put("charset", "UTF-8");
         props.put("maxFileSize", 10000);
+
+        String folder = null;
+        try {
+            folder = Paths.get(ClassLoader.getSystemResource("freqrnc2011.csv").toURI()).getParent().toString();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
         try {
             if (conn == null || conn.isClosed())
-                conn = DriverManager.getConnection("jdbc:relique:csv:" + "resources", props);
+                conn = DriverManager.getConnection("jdbc:relique:csv:" + folder, props);
         } catch (SQLException e) {
             e.printStackTrace();
         }

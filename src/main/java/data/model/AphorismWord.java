@@ -20,4 +20,17 @@ public class AphorismWord implements Word{
     public String toPublish() {
         return content;
     }
+
+    @Override
+    public String toString() {
+        int endIndex = 20;
+        String result;
+
+        if (content.length() > endIndex)
+            result = content.substring(0, endIndex);
+        else
+            result = content;
+
+        return result;
+    }
 }

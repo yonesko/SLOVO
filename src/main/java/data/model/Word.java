@@ -7,4 +7,7 @@ package data.model;
 public interface Word {
     boolean isPublishable();
     String toPublish();
+
+    @Override
+    String toString();
 }
