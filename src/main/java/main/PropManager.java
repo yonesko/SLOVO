@@ -2,8 +2,6 @@ package main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -13,24 +11,6 @@ import java.util.Properties;
  */
 public class PropManager {
     private static Properties props;
-
-    static {
-        props = new Properties(defaultProps());
-        FileInputStream in;
-
-        URL resource = ClassLoader.getSystemResource("SLOVO.properties");
-
-        try {
-            in = new FileInputStream(Paths.get(resource.toURI()).toFile());
-            props.load(in);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(0);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String getProp(String key) {
         return props.getProperty(key);
@@ -51,5 +31,22 @@ public class PropManager {
 
     public static Properties getProps() {
         return props;
+    }
+
+    public static void init(String propFile) {
+        props = new Properties(defaultProps());
+        FileInputStream in;
+
+//        URL resource = ClassLoader.getSystemResource("SLOVO.properties");
+
+        try {
+//            in = new FileInputStream(Paths.get(resource.toURI()).toFile());
+            in = new FileInputStream(Paths.get(propFile).toFile());
+            props.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 }
