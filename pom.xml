@@ -7,21 +7,59 @@
     <groupId>gleb</groupId>
     <artifactId>slovo</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <jdk.version>1.8</jdk.version>
+        <log4j.version>1.2.17</log4j.version>
+    </properties>
+
     <build>
+        <finalName>SLOVO</finalName>
         <plugins>
+            <!--&lt;!&ndash; download source code in Eclipse, best practice &ndash;&gt;-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-eclipse-plugin</artifactId>-->
+                <!--<version>2.9</version>-->
+                <!--<configuration>-->
+                    <!--<downloadSources>true</downloadSources>-->
+                    <!--<downloadJavadocs>false</downloadJavadocs>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!-- Set a JDK compiler level -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+
+            <!-- Make this jar executable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!--&lt;!&ndash; DO NOT include log4j.properties file in your Jar &ndash;&gt;-->
+                    <!--<excludes>-->
+                        <!--<exclude>**/log4j.properties</exclude>-->
+                    <!--</excludes>-->
+                    <archive>
+                        <manifest>
+                            <!-- Jar file entry point -->
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -67,7 +105,6 @@
             <artifactId>csvjdbc</artifactId>
             <version>1.0.28</version>
         </dependency>
-
     </dependencies>
 
 

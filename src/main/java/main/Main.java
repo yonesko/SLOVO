@@ -1,10 +1,10 @@
 package main;
 
-public class Main {
+public class  Main {
     public static void main(String[] args) {
-        String publProps = args[0];
+        String publProps;
 
-        if (publProps == null || publProps.isEmpty()) {
+        if (args.length <= 0 || (publProps = args[0]) == null || publProps.isEmpty()) {
             System.err.println("Specify publishing property file");
             System.exit(0);
         } else {
