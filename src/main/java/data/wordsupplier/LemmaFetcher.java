@@ -14,6 +14,7 @@ import java.util.*;
  * Created by gleb on 16.06.16.
  */
 public class LemmaFetcher {
+    private static LemmaFetcher instance;
     private ArrayList<String> lemmas;
     private Queue<String> wantedLemmas = new LinkedList<>(
             Arrays.asList(
@@ -29,10 +30,20 @@ public class LemmaFetcher {
 
         result = nextWantedLemma();
 
-        if (result == null)
-            result = lemmas.get(new Random().nextInt(lemmas.size()));
+        if (result == null) {
+            if (lemmas.size() == 0)
+                return null;
+            int ind = new Random().nextInt(lemmas.size());
+            result = lemmas.remove(ind);
+        }
 
         return result;
+    }
+
+    public static synchronized LemmaFetcher getInstance() {
+        if (instance == null)
+            instance = new LemmaFetcher();
+        return instance;
     }
 
     /**
@@ -50,7 +61,7 @@ public class LemmaFetcher {
         return result;
     }
 
-    public LemmaFetcher() {
+    private LemmaFetcher() {
         Statement stmt;
         ResultSet resultSet;
         lemmas = new ArrayList<>(53_000);

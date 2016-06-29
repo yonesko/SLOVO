@@ -11,7 +11,7 @@ public class  Main {
             PropManager.init(publProps);
 
             Publisher publisher = new Publisher();
-            publisher.start();
+            publisher.postPortion();
         }
     }
 }

@@ -1,6 +1,8 @@
 package main;
 
 import data.model.Word;
+import data.wordsupplier.AlgoWS;
+import data.wordsupplier.WordSupplier;
 import util.NextPostAdjuster;
 
 import java.time.LocalDateTime;
@@ -16,15 +18,15 @@ public class Publisher {
 
     private TemporalAdjuster nextPostAdjuster;
 
-    private WordChooser wordChooser;
+    private WordSupplier wordSupplier;
 
     public Publisher() {
         portionSize = Long.parseLong(PropManager.getProp("postAlogo.portionSize"));
         nextPostAdjuster = new NextPostAdjuster();
-        wordChooser = new WordChooser();
+        wordSupplier = new AlgoWS();
     }
 
-    public void start() {
+    public void postPortion() {
         Word nextPost;
         LocalDateTime nextPostTime;
 
@@ -34,7 +36,7 @@ public class Publisher {
         nextPostTime = LocalDateTime.parse(PropManager.getProp("postAlogo.startDateTime"));
 
         //publish portion
-        for (int i = 0; i < portionSize && (nextPost = wordChooser.nextWord()) != null; i++) {
+        for (int i = 0; i < portionSize && (nextPost = wordSupplier.nextWord()) != null; i++) {
             boolean isPosted = false, isPublishable;
 
             if(isPublishable = nextPost.isPublishable()) {
@@ -45,7 +47,7 @@ public class Publisher {
             } else {
                 i--;
             }
-
+//TODO fix logginig now i prints not the same it was on the moment of publishing
             System.out.println(String.format(
                     "--------- %d: %s ---------\n" +
                     "isPublishable=%s\n" +

@@ -18,7 +18,7 @@ public class WiktionaryWS implements WordSupplier {
 
     public WiktionaryWS() {
         wikiFetcher = new WikiFetcher();
-        lemmaFetcher = new LemmaFetcher();
+        lemmaFetcher = LemmaFetcher.getInstance();
     }
 
     @Override
@@ -26,7 +26,14 @@ public class WiktionaryWS implements WordSupplier {
         WikiWord result;
 
         do {
-            result = wikiFetcher.findWord(lemmaFetcher.nextLemma());
+            String lemma = lemmaFetcher.nextLemma();
+
+            if (lemma == null) {
+                result = null;
+                break;
+            }
+
+            result = wikiFetcher.findWord(lemma);
         } while (result == null);
 
         return result;
