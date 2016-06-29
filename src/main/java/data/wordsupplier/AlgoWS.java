@@ -8,6 +8,8 @@ import main.PropManager;
  * Created by gleb on 29 June 2016.
  */
 public class AlgoWS implements WordSupplier {
+    private final FunnyAphorismWS funnyAphorismWS;
+    private final WiktionaryWS wiktionaryWS;
     private int type;
 
     public AlgoWS() {
@@ -17,6 +19,8 @@ public class AlgoWS implements WordSupplier {
             e.printStackTrace();
             type = 1;
         }
+        funnyAphorismWS = FunnyAphorismWS.getInstance();
+        wiktionaryWS = new WiktionaryWS();
     }
 
     @Override
@@ -26,13 +30,13 @@ public class AlgoWS implements WordSupplier {
         switch (type) {
             default:
             case 1:
-                wordSupplier = new EvenWS(FunnyAphorismWS.getInstance(), new WiktionaryWS());
+                wordSupplier =  new EvenWS(funnyAphorismWS, wiktionaryWS);
                 break;
             case 2:
-                wordSupplier = new WiktionaryWS();
+                wordSupplier = wiktionaryWS;
                 break;
             case 3:
-                wordSupplier = FunnyAphorismWS.getInstance();
+                wordSupplier = funnyAphorismWS;
                 break;
         }
 
