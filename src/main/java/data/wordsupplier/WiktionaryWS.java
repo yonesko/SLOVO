@@ -13,6 +13,7 @@ public class WiktionaryWS implements WordSupplier {
     private LemmaFetcher lemmaFetcher;
 
     public static void main(String...args) throws SQLException {
+        //TODO зябкий
     }
 
     public WiktionaryWS() {

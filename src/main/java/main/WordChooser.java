@@ -39,5 +39,5 @@ public class WordChooser {
             result = ws[ran.nextInt(ws.length)].nextWord();
 
         return result;
-    }
+    }//TODO supporting type
 }

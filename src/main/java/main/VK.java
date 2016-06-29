@@ -92,8 +92,6 @@ public class VK {
             in.close();
 
         }
-        //print result
-        System.out.println(response.toString());
         return isWallPostSuccessful(response.toString());
     }
     /**

@@ -1,21 +1,20 @@
 package data.wordsupplier;
 
+import data.model.WikiWord;
+import data.model.Word;
 import main.PropManager;
 import org.relique.jdbc.csv.CsvDriver;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Properties;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by gleb on 16.06.16.
  */
 public class LemmaFetcher {
-    private ResultSet lemmas;
+    private ArrayList<String> lemmas;
     private Queue<String> wantedLemmas = new LinkedList<>(
             Arrays.asList(
                     PropManager.getProp("LemmaFetcher.wantedLemmas").split(",")));
@@ -23,7 +22,6 @@ public class LemmaFetcher {
     private Connection conn;
 
     /**
-     *
      * @return lemma or null if words is over
      */
     String nextLemma() {
@@ -31,16 +29,8 @@ public class LemmaFetcher {
 
         result = nextWantedLemma();
 
-        if (result == null) {
-            do {
-                try {
-                    if (lemmas.next())
-                        result = lemmas.getString("Lemma");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } while (result == null);
-        }
+        if (result == null)
+            result = lemmas.get(new Random().nextInt(lemmas.size()));
 
         return result;
     }
@@ -62,9 +52,15 @@ public class LemmaFetcher {
 
     public LemmaFetcher() {
         Statement stmt;
+        ResultSet resultSet;
+        lemmas = new ArrayList<>(53_000);
         try {
             stmt = getConn().createStatement();
-            lemmas = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011");
+            resultSet = stmt.executeQuery("SELECT Lemma, PoS, Freq FROM freqrnc2011");
+
+            while (resultSet.next())
+                lemmas.add(resultSet.getString("Lemma"));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
