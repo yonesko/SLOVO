@@ -1,6 +1,8 @@
 package main;
 
 public class  Main {
+    static Publisher publisher;
+
     public static void main(String[] args) {
         String publProps;
 
@@ -10,7 +12,7 @@ public class  Main {
         } else {
             PropManager.init(publProps);
 
-            Publisher publisher = new Publisher();
+            publisher = new Publisher();
             publisher.postPortion();
         }
     }
