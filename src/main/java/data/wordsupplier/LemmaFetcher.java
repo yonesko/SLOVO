@@ -1,12 +1,8 @@
 package data.wordsupplier;
 
-import data.model.WikiWord;
-import data.model.Word;
 import main.PropManager;
 import org.relique.jdbc.csv.CsvDriver;
 
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
@@ -91,16 +87,9 @@ public class LemmaFetcher {
         props.put("charset", "UTF-8");
         props.put("maxFileSize", 10000);
 
-        String folder = null;
-        try {
-            folder = Paths.get(ClassLoader.getSystemResource("freqrnc2011.csv").toURI()).getParent().toString();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
         try {
             if (conn == null || conn.isClosed())
-                conn = DriverManager.getConnection("jdbc:relique:csv:" + folder, props);
+                conn = DriverManager.getConnection("jdbc:relique:csv:class:" + FileInZipReader.class.getName(), props);
         } catch (SQLException e) {
             e.printStackTrace();
         }

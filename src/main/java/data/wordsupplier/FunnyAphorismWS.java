@@ -3,11 +3,9 @@ package data.wordsupplier;
 import data.model.AphorismWord;
 import data.model.Word;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,10 +38,9 @@ public class FunnyAphorismWS implements WordSupplier{
     private FunnyAphorismWS() {
         dict = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(
-                    new FileReader(
-                            Paths.get(
-                                    ClassLoader.getSystemResource("veselie_aforizmi.txt").toURI()).toFile()));
+            LineNumberReader reader = new LineNumberReader(
+                    new InputStreamReader(this.getClass().getResourceAsStream("/veselie_aforizmi.txt")));
+
             String line;
             StringBuilder buf = new StringBuilder();
 
@@ -57,7 +54,7 @@ public class FunnyAphorismWS implements WordSupplier{
                     buf.append('\n');
                 }
             }
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

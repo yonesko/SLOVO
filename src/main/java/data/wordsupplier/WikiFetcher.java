@@ -5,8 +5,6 @@ import data.model.WikiWord;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.Locale;
 import java.util.Scanner;
@@ -15,6 +13,10 @@ import java.util.Scanner;
  * Created by gleb on 16.06.16.
  */
 class WikiFetcher {
+    public static void main(String[] args) {
+        WikiFetcher wikiFetcher = new WikiFetcher();
+        System.out.println(wikiFetcher.findWord("зябнуть"));
+    }
     /**
      * Makes http query to the wiktionary and parse page.<br>
      * If word exists at wiktionary and at least one parse is successful
@@ -23,17 +25,14 @@ class WikiFetcher {
      * @param word to find at wiktionary
      * @return word or null if fail or word is null or empty
      */
+
     public WikiWord findWord(String word) {
         if (word == null || word.isEmpty())
             return null;
         word = word.toLowerCase();
         String content = null;
         WikiWord result = null;
-        try {
-            content = getContent(word);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+        content = getContent(word);
         if (content != null)
             result = new WikiWord(word,
                     parseMeaning(content),
@@ -42,15 +41,24 @@ class WikiFetcher {
         return result;
     }
 
-    private String getContent(String word) throws IOException, URISyntaxException {
+    /**
+     * @return formatted page or null if fail
+     */
+    private String getContent(String word) {
         StringBuilder sbPage = new StringBuilder();
         String result = null;
         String cmds[] = {
-                Paths.get(ClassLoader.getSystemResource("getPage.sh").toURI()).toString(),
-                word
+                "bash",
+                "-c",
+                "wget \"https://ru.wiktionary.org/w/index.php?title="+word+"&printable=yes\" -O - 2>/dev/null | w3m -dump -no-graph -T text/html"
         };
+
         Runtime rt = Runtime.getRuntime();
+
+        try {
+
         Process proc = rt.exec(cmds);
+        proc.waitFor();
 
         BufferedReader stdInput = new BufferedReader(new
                 InputStreamReader(proc.getInputStream()));
@@ -64,6 +72,9 @@ class WikiFetcher {
 
         while ((s = stdError.readLine()) != null)
             System.err.println(s);
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
 
         //get content between two regexps
         String page = sbPage.toString();
