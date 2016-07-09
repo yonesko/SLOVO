@@ -12,9 +12,7 @@ import java.util.*;
 public class LemmaFetcher {
     private static LemmaFetcher instance;
     private ArrayList<String> lemmas;
-    private Queue<String> wantedLemmas = new LinkedList<>(
-            Arrays.asList(
-                    PropManager.getProp("LemmaFetcher.wantedLemmas").split(",")));
+    private Queue<String> wantedLemmas;
 
     private Connection conn;
 
@@ -60,6 +58,12 @@ public class LemmaFetcher {
     private LemmaFetcher() {
         Statement stmt;
         ResultSet resultSet;
+
+        String csvLemmas = PropManager.getProp("LemmaFetcher.wantedLemmas");
+        wantedLemmas = new LinkedList<>(
+                Arrays.asList(
+                        csvLemmas.split(",")));
+
         lemmas = new ArrayList<>(53_000);
         try {
             stmt = getConn().createStatement();

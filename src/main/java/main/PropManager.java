@@ -2,6 +2,7 @@ package main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -19,14 +20,17 @@ public class PropManager {
     private static Properties defaultProps() {
         Properties result = new Properties();
 
-        result.setProperty("postAlogo.portionSize", "5");
         result.setProperty("VK.ownerName", "119022967");//test owner_id by default
+        result.setProperty("postAlogo.portionSize", "5");
+        result.setProperty("postAlogo.startDateTime", "1970-06-30T22:55:00");
         result.setProperty("postAlgo.nextPostDelay", "4");
-        result.setProperty("LemmaFetcher.wantedLemmas", "");
-        result.setProperty("LemmaFetcher.wantedLemmas", "");
         result.setProperty("postAlgo.wordChooser.algo.type", "1");
+        result.setProperty("LemmaFetcher.wantedLemmas", "");
 
         return result;
+    }
+
+    private PropManager() {
     }
 
     public static Properties getProps() {
@@ -48,5 +52,14 @@ public class PropManager {
             e.printStackTrace();
             System.exit(0);
         }
+        //convert from standard properties charset real charset
+        String lemmas = PropManager.getProp("LemmaFetcher.wantedLemmas");
+        try {
+            lemmas = new String(lemmas.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            lemmas = "";
+        }
+        props.setProperty("LemmaFetcher.wantedLemmas", lemmas);
     }
 }
