@@ -5,6 +5,7 @@ import data.wordsupplier.AlgoWS;
 import data.wordsupplier.WordSupplier;
 import util.NextPostAdjuster;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjuster;
 
@@ -29,9 +30,11 @@ public class Publisher {
     public void postPortion() {
         Word nextPost;
         LocalDateTime nextPostTime;
-
-        PropManager.getProps().list(System.out);
-
+        MessageFormat publishingInfo = new MessageFormat(
+                "--------- {0}: {1} ---------\n" +
+                "isPublishable={2}\n" +
+                "isPosted={3}\n" +
+                "-------------------");
         //set most recent post time
         nextPostTime = LocalDateTime.parse(PropManager.getProp("postAlogo.startDateTime"));
 
@@ -47,12 +50,8 @@ public class Publisher {
             } else {
                 i--;
             }
-//TODO fix logginig now i prints not the same it was on the moment of publishing
-            System.out.println(String.format(
-                    "--------- %d: %s ---------\n" +
-                    "isPublishable=%s\n" +
-                    "isPosted=%s\n" +
-                    "-------------------", i, nextPost, isPublishable, isPosted));
+
+            System.out.println(publishingInfo.format(new Object[]{i, nextPost, isPublishable, isPosted}));
 
         }
     }

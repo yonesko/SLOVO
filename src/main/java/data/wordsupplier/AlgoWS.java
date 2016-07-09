@@ -10,6 +10,7 @@ import main.PropManager;
 public class AlgoWS implements WordSupplier {
     private final FunnyAphorismWS funnyAphorismWS;
     private final WiktionaryWS wiktionaryWS;
+    private final EvenWS evenWS;
     private int type;
 
     public AlgoWS() {
@@ -21,6 +22,7 @@ public class AlgoWS implements WordSupplier {
         }
         funnyAphorismWS = FunnyAphorismWS.getInstance();
         wiktionaryWS = new WiktionaryWS();
+        evenWS = new EvenWS(funnyAphorismWS, wiktionaryWS);
     }
 
     @Override
@@ -30,7 +32,7 @@ public class AlgoWS implements WordSupplier {
         switch (type) {
             default:
             case 1:
-                wordSupplier =  new EvenWS(funnyAphorismWS, wiktionaryWS);
+                wordSupplier = evenWS;
                 break;
             case 2:
                 wordSupplier = wiktionaryWS;
