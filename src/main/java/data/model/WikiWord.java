@@ -8,18 +8,18 @@ public class WikiWord implements Word {
     private final String meaning;
     private final String etymology;
     private final String syllables;
-    private static final int THRESHOLD = 60;
+    private final String synonyms;
 
-    public WikiWord(String name, String meaning, String etymology, String syllables) {
+    public WikiWord(String name, String meaning, String etymology, String syllables, String synonyms) {
         this.name = name;
         this.meaning = meaning;
         this.etymology = etymology;
         this.syllables = syllables;
+        this.synonyms = synonyms;
     }
 
     public boolean isPublishable() {
-        return meaning != null && meaning.length() > THRESHOLD ||
-                etymology != null && etymology.length() > THRESHOLD;
+        return toPublish().length() >= name.length() * 2;
     }
 
     public String toPublish() {
@@ -34,7 +34,13 @@ public class WikiWord implements Word {
             result.append('\n');
             result.append(meaning);
         }
-        if (etymology != null && !etymology.isEmpty()) {
+        if (synonyms != null && !synonyms.isEmpty()) {
+            result.append('\n');
+            result.append("СИНОНИМЫ:");
+            result.append('\n');
+            result.append(synonyms);
+        }
+        if (etymology != null && !etymology.isEmpty() && etymology.length() >= 20 && etymology.length() <= 100) {
             result.append('\n');
             result.append("ЭТИМОЛОГИЯ:");
             result.append('\n');

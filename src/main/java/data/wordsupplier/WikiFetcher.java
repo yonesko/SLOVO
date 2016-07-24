@@ -15,7 +15,7 @@ import java.util.Scanner;
 class WikiFetcher {
     public static void main(String[] args) {
         WikiFetcher wikiFetcher = new WikiFetcher();
-        System.out.println(wikiFetcher.findWord("зябнуть"));
+        System.out.println(wikiFetcher.findWord("подбивать").toPublish());
     }
     /**
      * Makes http query to the wiktionary and parse page.<br>
@@ -37,7 +37,8 @@ class WikiFetcher {
             result = new WikiWord(word,
                     parseMeaning(content),
                     parseEtymology(content),
-                    parseSyllables(content, word));
+                    parseSyllables(content, word),
+                    parseSynonyms(content));
         return result;
     }
 
@@ -85,7 +86,7 @@ class WikiFetcher {
                 result = result.replaceAll("\\[править\\]", "");
                 //prevent VK markup expanding
                 result = result.replaceAll("\\*", "* ");
-                result = result.replaceAll("◆\\s*Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\.\\s+рекомендации\\)\\.", "");
+                result = result.replaceAll("◆\\s*Не\\s+указан\\s+пример\\s+употребления\\s+\\(см\\s*\\.\\s+рекомендации\\s*\\)\\s*\\.", "");
                 result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Национального\\s+корпуса\\s+русского\\s+языка,\\s+см\\.\\s+Список\\s+литературы\\)", "");
                 result = result.replaceAll("\\s*\\(цитата\\s+из\\s+Викитеки\\)", "");
             }
@@ -111,14 +112,28 @@ class WikiFetcher {
         return result;
     }
 
+    private String parseSynonyms(String content) {
+        String result = parseParagraph(content, "Синонимы");
+        if (result != null)
+            result = removeEmptyListItems(result).trim();
+        return result;
+    }
+
     /**
      * {@link WikiFetcher#parseParagraph Parses} meaning paragraph removing empty items from list.
      */
     private String parseMeaning(String content) {
         String result = parseParagraph(content, "Значение");
         if (result != null)
-            result = result.replaceAll("(?m)^\\s*\\d{1,2}\\.\\s*$", "").trim();
+            result = removeEmptyListItems(result).trim();
         return result;
+    }
+/*
+1. -
+ 2. -
+ */
+    private String removeEmptyListItems(String text) {
+        return text.replaceAll("(?m)^\\s*\\d{1,2}\\.( \\W)?\\s*$", "");
     }
 
     /**

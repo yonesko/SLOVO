@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 /*
 
 https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,offline&response_type=token&v=5.50
+https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=wall,notes,pages,offline,groups,docs,manage&response_type=token&v=5.50
  */
 public class VK {
     /**
@@ -35,7 +36,9 @@ public class VK {
     private final static String ACCES_TOKEN = "7c615dcc1c06ead089152605fc31e1a9598d7b01f2c6f8e77cfe4468028bd1df542bc0bfa9a82c6618ac9";
 //
     public static void main(String[] args) throws Exception {
-        System.out.println(VK.getPosts("postponed"));
+        for (WallPost post : VK.getPosts()) {
+            cleanUpTest(post.getId());
+        }
     }
 
     /**
@@ -115,14 +118,17 @@ public class VK {
     }
 
     private static boolean isWallPostSuccessful(String response) throws ParseException {
-        boolean result;
+        boolean isOK;
         JSONParser parser = new JSONParser();
         JSONObject jsonResp = (JSONObject) parser.parse(response);
         JSONObject post = (JSONObject) jsonResp.get("response");
 
-        result = post != null && post.get("post_id") != null;
+        isOK = post != null && post.get("post_id") != null;
 
-        return result;
+        if (!isOK)
+            System.err.println(response);
+
+        return isOK;
     }
 
     private static List<WallPost> getPosts(String filter) throws IOException, URISyntaxException, ParseException {
@@ -157,16 +163,23 @@ public class VK {
         return result;
 
     }
+    /*
+    https://new.vk.com/club119022967
+    https://oauth.vk.com/authorize?client_id=5381172&display=popup  &redirect_uri=https://new.vk.com/club119022967&scope=wall&response_type=token&v=5.53&state=123456
 
-    private static void cleanUpTest() {
+    https://oauth.vk.com/authorize?client_id=5381172&display=page&redirect_uri=https://new.vk.com/club119022967&scope=wall&response_type=code
+    e89181bc8073e13e26
+    https://oauth.vk.com/access_token?client_id=5381172&client_secret=HuOR7xy83d4PzaFfA9R3&redirect_uri=https://new.vk.com/club119022967&code=e89181bc8073e13e26
+     */
 
-    }
-    private static void cleanUpTest(String post_id) throws IOException, URISyntaxException {
+    private static void cleanUpTest(long post_id) throws IOException, URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("https").setHost("api.vk.com").setPath("/method/wall.delete")
                 .setParameter("owner_id", "-" + 119022967)
-                .setParameter("acces_token", ACCES_TOKEN)
-                .setParameter("post_id", post_id);
+                .setParameter("acces_token", "cbc0eff755f0502d619a8d7f2bd5456f55e23ac1d25c250f6177651d491ef5667e89a60584e1917da8760")
+                .setParameter("post_id", String.valueOf(post_id));
+
+        System.out.println("uriBuilder = " + uriBuilder);
 
         HttpResponse response = HttpConnectionAgent.connectResponse(uriBuilder);
         int status = response.getStatusLine().getStatusCode();
